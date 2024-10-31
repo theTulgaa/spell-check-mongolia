@@ -1,35 +1,63 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+export const App = () => {  
+
+  const [text, setText] = useState('');
+  const maxCharacters = 1000;
+  
+  const handleChange = (event) => {
+      const newText = event.target.value;
+  
+      // Хэрэв шинэ текстийн урт хэтрэхгүй бол state-г шинэчилнэ
+      if (newText.length <= maxCharacters) {
+        setText(newText);
+      } else {
+        // Хэтэрсэн текстийг тасална
+        setText(newText.slice(0, maxCharacters));
+      }
+  };
+
+  const countWords = (text) => {
+      const words = text.trim().split(/\s+/); 
+      return text.length > 0 ? words.length : 0; 
+  };
+
+  const countCharacters = (text) => {
+      return text.length; 
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+      <div className="grid-container">
+          <div class="container">
+              <textarea 
+                  placeholder="Энд дарж бичнэ үү"
+                  value={text}
+                  onChange={handleChange}
+              />
+              
+              <div className="counts">
+                  <div>Үгийн тоо: {countWords(text)}</div>
+                  <div>Тэмдгийн тоо: {countCharacters(text)}/{maxCharacters}</div>
+                  {countCharacters(text) >= maxCharacters && (
+                      <div style={{ color: 'red' }}>
+                          Тэмдэгтийн тоо хэтэрч, таслагдсан!
+                      </div>
+                  )}
+              </div>
+              
+              <button className='check-button'>Аладааг шалгах</button>
+              
+              <div class="icon">
+                  <img src="checkmark-icon.png" alt="Checkmark" />
+              </div>
+          </div>
+          <div className="misspelled-word">
+              <h1 style={{ fontSize: '24px', textAlign: 'center', color:'black'}}>Алдаатай үгс</h1>
 
-export default App
+          </div>
+      </div>
+      
+    );
+  
+};
