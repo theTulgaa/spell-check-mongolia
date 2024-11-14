@@ -1,10 +1,15 @@
 import { useState, useEffect, useCallback } from "react";
 import "./App.css";
 import debounce from "lodash.debounce";
+import { Pie } from "react-chartjs-2";
 
 export const App = () => {
   const [resp, setResp] = useState("");
   const [text, setText] = useState("");
+
+  const [data, setData] = useState("");
+  const [options, setOptions] = useState("");
+
   const maxCharacters = 1000;
   const [suggestions, setSuggestions] = useState([]);
 
@@ -79,36 +84,76 @@ export const App = () => {
     return text.length;
   };
 
+  // энэ зүгээр жишээ хийх гэж байгаа
+  const pie_chart = () =>{
+    const data = {
+      labels: ["Developer", "Designer", "Manager"],
+      datasets: [
+          {
+              label: "Salary Distribution",
+              data: [5000, 4500, 6000],
+              backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
+              hoverBackgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
+          },
+      ],
+    };
+    setData(data);
+
+  const options = {
+    responsive: true,
+    plugins: {
+        legend: {
+            position: "top",
+        },
+        tooltip: {
+            enabled: true,
+        },
+    },
+  };
+  setOptions(options);
+
+}
+
   return (
-    <div className="grid-container">
-      <div className="container">
-        <textarea placeholder="Энд дарж бичнэ үү" value={text} onChange={handleChange} />
-
-        <div className="counts">
-          <div>Үгийн тоо: {countWords(text)}</div>
-          <div>
-            Тэмдгийн тоо: {countCharacters(text)}/{maxCharacters}
+    <div className="main-container">
+      <div className="sub-container">
+        <div className="sub-sub-container">
+          <textarea placeholder="Энд дарж бичнэ үү" value={text} onChange={handleChange} />
+          <div className="icon-container">
+            <div className="icons">
+              <div className="copy"></div>
+              <div className="paste"></div>
+              <div className="delete"></div>
+              <div className="counts">
+                <div>Үгийн тоо: {countWords(text)}</div>
+                <div>
+                  Тэмдгийн тоо: {countCharacters(text)}/{maxCharacters}
+                </div>
+                {countCharacters(text) >= maxCharacters && (
+                  <div style={{ color: "red" }}>Тэмдэгтийн тоо хэтэрч, таслагдсан!</div>
+                )}
+              </div>
+            </div>
           </div>
-          {countCharacters(text) >= maxCharacters && (
-            <div style={{ color: "red" }}>Тэмдэгтийн тоо хэтэрч, таслагдсан!</div>
-          )}
+
+          <button className="check-button" onClick={pie_chart}>Алдааг шалгах</button>
         </div>
 
-        <button className="check-button">Алдааг шалгах</button>
+        <div className="analysis">
+          <h1 style={{fontSize: '30px', textAlign: 'center', color: 'black', fontWeight: "bold"}}>Мэдээллийн дүн шинжилгээ</h1>
+          <h1 style={{ fontSize: "24px", textAlign: "center", color: "black" }}>
+            {suggestions.map((suggestion, index) => (
+              <>
+                <span key={index}>{suggestion}</span>
+                <br />
+              </>
+            ))}
 
-        <div className="icon">
-          <img src="checkmark-icon.png" alt="Checkmark" />
+            {/* <div className="pie-Chart">
+              <Pie data={data} options={options} />
+            </div> */}
+          </h1>
         </div>
-      </div>
-      <div className="misspelled-word">
-        <h1 style={{ fontSize: "24px", textAlign: "center", color: "black" }}>
-          {suggestions.map((suggestion, index) => (
-            <>
-              <span key={index}>{suggestion}</span>
-              <br />
-            </>
-          ))}
-        </h1>
       </div>
     </div>
   );

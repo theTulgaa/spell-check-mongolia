@@ -1,46 +1,50 @@
-.grid-container {
+.main-container {
   display: grid;
   background-color: #ffee00;
-  grid-template-columns: 2fr 1fr;
   column-gap: 30px;
   row-gap: 10px;
   margin-top: 30px;
   padding: 10px;
-  
+  height: 100vh;
 }
 
-.grid-container div{
-  padding: 10px;
-  cursor: pointer;
-  transition: all;
+.sub-container {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  width: 80%;
+  height: 80%;
+  flex-shrink: 0;
+  background-color: transparent;
+  margin: 40px;
+  column-gap: 20px;
 }
-/* Main container */
-.container {
+
+.sub-sub-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
+  padding-top: 20px;
   background-color: #f5f5f5;
-  width: 100%;
+  width: 95%;
+  height: 93%; /* Эцэг контейнерийн өндөртэй тэнцүү байх */
   max-width: 800px;
-  margin: 0 auto;
-  border-radius: 15px;
+  border: 2px solid #000;
+  border-top-left-radius: 20px; /* Дээд баруун булан */
+  border-bottom-left-radius: 20px; /* Доод баруун булан */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Styling the text area */
 textarea {
+
+  color: #000;
   width: 90%;
-  height: 300px;
-  padding: 20px;
-  font-size: 18px;
-  border: 2px solid #ddd;
-  border-radius: 8px;
-  resize: none;
-  outline: none;
-  color: #333;
-  background-color: #fff;
-  font-family: Arial, sans-serif;
+  height: 60%;
+  flex-shrink: 0;
+  background: rgba(217, 217, 217, 0.03);
+  box-shadow: 7.673px -7.673px 7.673px 5px rgba(174, 174, 174, 0.26) inset, 15.347px -15.347px 15.347px 0px rgba(255, 255, 255, 0.26) inset, -7.673px 7.673px 7.673px 0px rgba(255, 255, 255, 0.26) inset, -15.347px 15.347px 15.347px 0px rgba(174, 174, 174, 0.26) inset;
+  backdrop-filter: blur(9.208000183105469px);
+
 }
 
 /* Placeholder text style */
@@ -48,67 +52,80 @@ textarea::placeholder {
   color: #b3b3b3;
   font-style: italic;
 }
+.icon-container{
+  width: 60%;
+  height: 10%;
+  flex-shrink: 0;
+  border-radius: 15px;
+  border: 2px solid #000;
+  background: #FFF;
+  box-shadow: 5px 5px 4px 3px rgba(0, 0, 0, 0.25);
+}
+.icons{
+  display: flex;
+  width: 240px;
+  height: 80%;
+  padding: 0px 10px;
+  align-items: flex-start;
+  gap: 20px;
+  flex-shrink: 0;
+}
 
+.icons div{
+  width: 50px;
+  height: 50px;
+  flex-shrink: 0;
+}
+.copy{
+  background: url("https://img1.pnghut.com/21/15/10/uGPXWqShYW/icon-design-text-rectangle-copying-area.jpg") lightgray 50% / contain no-repeat;
+}
+
+.paste{
+  background: url("https://icon-library.com/images/paste-icon/paste-icon-25.jpg") lightgray 50% / contain no-repeat;
+  
+}
+
+.delete{
+  background: url("https://e7.pngegg.com/pngimages/125/230/png-clipart-rubbish-bins-waste-paper-baskets-computer-icons-font-awesome-recycling-bin-others-text-rectangle.png") lightgray 50% / contain no-repeat;
+  
+}
+/* Word count and character count container */
+.counts {
+  display: flex;
+  color: #000;
+  font-family: Inter;
+  font-size: 12px;
+  font-style: normal;
+  line-height: normal;
+  width: 40%;
+}
 /* Button to check spelling */
 .check-button {
-  margin-top: 20px;
-  padding: 10px 20px;
-  background-color: #0066ff;
-  color: #fff;
-  font-size: 16px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
+  width: 246px;
+  height: 66px;
+  flex-shrink: 0;
+  border-radius: 50px;
+  background: linear-gradient(to bottom right, #4834D4 0%, #686DE0 50%) bottom right / 50% 50% no-repeat, linear-gradient(to bottom left, #4834D4 0%, #686DE0 50%) bottom left / 50% 50% no-repeat, linear-gradient(to top left, #4834D4 0%, #686DE0 50%) top left / 50% 50% no-repeat, linear-gradient(to top right, #4834D4 0%, #686DE0 50%) top right / 50% 50% no-repeat;
+  box-shadow: 0px 4px 20px 0px rgba(0, 11, 255, 0.35);
 }
 
 .check-button:hover {
   background-color: #0052cc;
 }
 
-/* Word count and character count container */
-.counts {
-  display: flex;
-  justify-content: space-between;
+
+.analysis{
   width: 100%;
-  margin-top: 10px;
-  color: #808080;
+  height: 96.5%;
+  border-top-right-radius: 20px; 
+  border-bottom-right-radius: 20px; 
+  flex-shrink: 0;
+  border: 2px solid #000;
+  background: rgba(217, 217, 217);
+  box-shadow: 8.427px -8.427px 8.427px 0px rgba(182, 182, 182, 0.40) inset, -8.427px 8.427px 8.427px 0px rgba(255, 255, 255, 0.40) inset;
+  backdrop-filter: blur(42.13333511352539px);
+  
 }
-
-.counts div {
-  font-size: 14px;
-}
-
-/* Green check icon at the bottom right */
-.icon {
-  position: absolute;
-  bottom: 30px;
-  right: 30px;
-  width: 40px;
-  height: 40px;
-  background-color: #00cc66;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.icon img {
-  width: 20px;
-  height: 20px;
-}
-
-.misspelled-word {
-  margin-top: 20px;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #fff;
-  max-width: 200px;
-  position: relative;
-}
-
-
-
 
 @media (max-width: 768px) {
   .grid-container {
@@ -122,6 +139,18 @@ textarea::placeholder {
       height: 150px;
   }
   
+}
+@media (max-width: 460){
+  .grid-container {
+    grid-template-columns: 1fr;
+    row-gap: 30px;
+  }
+  .container {
+    padding: 10px;
+  }
+  textarea {
+    height: 150px;
+  }
 }
 
 
