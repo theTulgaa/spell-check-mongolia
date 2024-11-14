@@ -2,6 +2,29 @@ import { useState, useEffect, useCallback } from "react";
 import "./App.css";
 import debounce from "lodash.debounce";
 import { Pie } from "react-chartjs-2";
+import { BarChart } from '@mui/x-charts/BarChart';
+
+
+export default function SimpleCharts() {
+  return (
+    <BarChart
+      xAxis={[
+        {
+          id: 'barCategories',
+          data: ['bar A', 'bar B', 'bar C'],
+          scaleType: 'band',
+        },
+      ]}
+      series={[
+        {
+          data: [2, 5, 3],
+        },
+      ]}
+      width={500}
+      height={300}
+    />
+  );
+}
 
 export const App = () => {
   const [resp, setResp] = useState("");
@@ -118,6 +141,7 @@ export const App = () => {
     <div className="main-container">
       <div className="sub-container">
         <div className="sub-sub-container">
+        <h2>Untitled document</h2>
           <textarea placeholder="Энд дарж бичнэ үү" value={text} onChange={handleChange} />
           <div className="icon-container">
             <div className="icons">
@@ -140,7 +164,7 @@ export const App = () => {
         </div>
 
         <div className="analysis">
-          <h1 style={{fontSize: '30px', textAlign: 'center', color: 'black', fontWeight: "bold"}}>Мэдээллийн дүн шинжилгээ</h1>
+          <h1 style={{fontSize: '30px', textAlign: 'center', color: 'black', fontFamily: 'Outward'}}>Мэдээллийн дүн шинжилгээ</h1>
           <h1 style={{ fontSize: "24px", textAlign: "center", color: "black" }}>
             {suggestions.map((suggestion, index) => (
               <>
@@ -148,6 +172,10 @@ export const App = () => {
                 <br />
               </>
             ))}
+          <div className="empty">
+            <h5>Мэдээлэл алга байна.</h5>
+          </div>
+          <div className="binocular"></div>
 
             {/* <div className="pie-Chart">
               <Pie data={data} options={options} />
