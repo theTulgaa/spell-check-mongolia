@@ -7,7 +7,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 
 
-directory = "dataset"
+directory = "C:/Users/Acer/OneDrive/Desktop/my project/spell-check-mongolia/back-end/dataset"
 main_dir = os.listdir(directory)
 file_paths = []
 class_names = ["sport", "politic", "history", "health", "finance", "entertainment"]
