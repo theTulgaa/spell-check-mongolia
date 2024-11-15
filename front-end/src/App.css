@@ -77,7 +77,7 @@ textarea::placeholder {
   flex-shrink: 0;
 }
 .copy{
-  background: url("https://img1.pnghut.com/21/15/10/uGPXWqShYW/icon-design-text-rectangle-copying-area.jpg") lightgray 50% / contain no-repeat;
+  background: url("https://webstockreview.net/images/are-png-files-good-for-printing-2.png") lightgray 50% / contain no-repeat;
 }
 
 .paste{
@@ -86,7 +86,7 @@ textarea::placeholder {
 }
 
 .delete{
-  background: url("https://e7.pngegg.com/pngimages/125/230/png-clipart-rubbish-bins-waste-paper-baskets-computer-icons-font-awesome-recycling-bin-others-text-rectangle.png") lightgray 50% / contain no-repeat;
+  background: url("https://icon-library.com/images/delete-icon-png/delete-icon-png-4.jpg") lightgray 50% / contain no-repeat;
   
 }
 /* Word count and character count container */
@@ -128,30 +128,14 @@ textarea::placeholder {
 }
 
 @media (max-width: 768px) {
-  .grid-container {
+  .sub-container {
       grid-template-columns: 1fr;
       row-gap: 30px;
   }
-  .container {
+  .sub-sub-container {
       padding: 10px;
   }
   textarea {
       height: 150px;
-  }
-  
+  } 
 }
-@media (max-width: 460){
-  .grid-container {
-    grid-template-columns: 1fr;
-    row-gap: 30px;
-  }
-  .container {
-    padding: 10px;
-  }
-  textarea {
-    height: 150px;
-  }
-}
-
-
-
