@@ -11,6 +11,7 @@ export const App = () => {
   const [showText, setShowText] = useState(false);
   const [misspelledWords, setMisspelledWords] = useState({});
   const [activeWord, setActiveWord] = useState("");
+  const [prediction, setPrediction] = useState({});
 
   const sendRequest = async (text) => {
     try {
@@ -49,6 +50,17 @@ export const App = () => {
     } finally {
       setRes(false);
       setShowText(true);
+    }
+  };
+
+  const getPrediction = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:8080/predict");
+      const data = await response.json();
+      console.log(data.prediction);
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Something went wrong!");
     }
   };
 
@@ -104,7 +116,7 @@ export const App = () => {
             <hr />
             <div className="section1-btn">
               <button onClick={getResponse}>{res ? "checking....." : "check"}</button>
-              <button>analyze</button>
+              <button onClick={getPrediction}>analyze</button>
             </div>
           </div>
           <div className="section2">
