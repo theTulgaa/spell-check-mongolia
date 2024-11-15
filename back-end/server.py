@@ -21,6 +21,7 @@ def index():
         if not dictionary.lookup(word):  
           suggestions[word] = list(dictionary.suggest(word))
     response_data = {'suggestions': suggestions}
+    
     json_data = json.dumps(response_data, ensure_ascii=False)
     return Response(json_data, content_type="application/json; charset=utf-8")
 

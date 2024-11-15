@@ -10,11 +10,11 @@ export const App = () => {
   const [res, setRes] = useState(false);
   const [showText, setShowText] = useState(false);
   const [misspelledWords, setMisspelledWords] = useState({});
-  const [activeWord, setActiveWord] = useState(""); 
+  const [activeWord, setActiveWord] = useState("");
 
   const sendRequest = async (text) => {
     try {
-      const response = await fetch("http://localhost:8080/send", {
+      const response = await fetch("http://127.0.0.1:8080/send", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -23,7 +23,7 @@ export const App = () => {
       });
       const data = await response.json();
       setResponseText(data.response);
-      setMisspelledWords(data.suggestions || {}); 
+      setMisspelledWords(data.suggestions || {});
     } catch (error) {
       console.error("Error:", error);
     }
@@ -37,21 +37,21 @@ export const App = () => {
   }, [inputText]);
 
   const getResponse = async () => {
-    setRes(true)
+    setRes(true);
     try {
-      const response = await fetch("http://localhost:8080/");
+      const response = await fetch("http://127.0.0.1:8080");
       const data = await response.json();
-      setMisspelledWords(data.suggestions)
+      setMisspelledWords(data.suggestions);
       console.log(data.suggestions);
     } catch (error) {
       console.error("Error:", error);
-      alert("Something went wrong!")
+      alert("Something went wrong!");
     } finally {
       setRes(false);
-      setShowText(true)
+      setShowText(true);
     }
   };
-  
+
   const wordCount = inputText.trim() === "" ? 0 : inputText.trim().split(/\s+/).length;
 
   const renderTextWithHighlights = () => {
@@ -63,11 +63,7 @@ export const App = () => {
         {responseText.split(" ").map((word, index) => {
           if (misspelledWords[word]) {
             return (
-              <span
-                key={index}
-                className="misspelled-word"
-                onClick={() => handleWordClick(word)}
-              >
+              <span key={index} className="misspelled-word" onClick={() => handleWordClick(word)}>
                 {word}{" "}
               </span>
             );
@@ -86,7 +82,7 @@ export const App = () => {
   const handleSuggestionClick = (suggestion) => {
     const newText = responseText.replace(activeWord, suggestion);
     setResponseText(newText);
-    setSuggestions([]); 
+    setSuggestions([]);
   };
 
   return (
@@ -107,16 +103,13 @@ export const App = () => {
             )}
             <hr />
             <div className="section1-btn">
-              <button onClick={getResponse}>
-                {res ? "checking....." : "check"}
-              </button>
+              <button onClick={getResponse}>{res ? "checking....." : "check"}</button>
               <button>analyze</button>
             </div>
           </div>
           <div className="section2">
             <div className="section2-analyze">
-              Analyze hiih graph end haragdana sdakud mni. Ongon buur, Zandan
-              tomor 2 sda mni.
+              Analyze hiih graph end haragdana sdakud mni. Ongon buur, Zandan tomor 2 sda mni.
             </div>
             <div className="section2-count-word">
               <span>{wordCount}/50</span>
@@ -127,10 +120,7 @@ export const App = () => {
               <h4>Suggestions for "{activeWord}":</h4>
               <ul>
                 {suggestions.map((suggestion, index) => (
-                  <li
-                    key={index}
-                    onClick={() => handleSuggestionClick(suggestion)}
-                  >
+                  <li key={index} onClick={() => handleSuggestionClick(suggestion)}>
                     {suggestion}
                   </li>
                 ))}
