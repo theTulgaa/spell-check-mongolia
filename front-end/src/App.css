@@ -69,7 +69,7 @@ button {
   display: flex;
   align-items: center;
 }
-span {
+.span1 {
   background-color: grey;
   padding: 10px;
   border-radius: 5px;
@@ -80,14 +80,14 @@ span {
   text-decoration: underline;
   color: red;
   cursor: pointer;
-}
-.misspelled-word {
-  text-decoration: underline;
-  color: red;
-  cursor: pointer;
   display: inline;
+  margin-left: 5px;
+  padding: 5px;
 }
 
+.correct-word {
+  color: black;
+}
 .suggestions-box {
   position: fixed;  
   top: 0;           

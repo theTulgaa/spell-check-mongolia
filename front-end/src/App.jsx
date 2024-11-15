@@ -72,7 +72,7 @@ export const App = () => {
               </span>
             );
           } else {
-            return <span key={index}>{word} </span>;
+            return <span className="correct-word" key={index}>{word} </span>;
           }
         })}
       </p>
@@ -119,7 +119,7 @@ export const App = () => {
               tomor 2 sda mni.
             </div>
             <div className="section2-count-word">
-              <span>{wordCount}/50</span>
+              <span className="span1">{wordCount}/50</span>
             </div>
           </div>
           {activeWord && suggestions.length > 0 && (
