@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, session, jsonify, request
 from flask_cors import CORS
 from spylls.hunspell import Dictionary
 import os
@@ -13,13 +13,10 @@ dir = os.path.dirname(os.path.realpath(__file__)) + '/languages/mn_Mn'
 
 dictionary = Dictionary.from_files(dir)
 
-transfer = """
-"""
-
 @app.route('/')
 def index():
     suggestions = {}
-    words = transfer.split()
+    words = session.get('input', 'No_data_found').split()
     for word in words:
         if not dictionary.lookup(word):  
           suggestions[word] = list(dictionary.suggest(word))
@@ -31,21 +28,20 @@ def index():
 def receive_message():
     data = request.json
     message = data.get("message", "")
-    global transfer
 
     response_message = f"{message}"
-    transfer = response_message
+    session['input'] = response_message
 
     return jsonify({"response": response_message})
 
 # ene huselt text analyze hiihed hereglegdne. Odoo jo aldaa garaad bga sda mni
-# @app.route('/predict', methods=['POST'])
-# def predict():
-#     data = request.json
-#     new_news = data.get("input_text", "")
-#     prediction_result = prediction_repsonse(new_news)
+@app.route('/predict')
+def predict():
+    data = request.json
+    new_news = data.get("input_text", "")
+    prediction_result = prediction_repsonse(new_news)
 
-#     return jsonify(prediction_result)
+    return jsonify(prediction_result)
 
 if __name__ == "__main__":
   app.run(debug=True, port=8080)
