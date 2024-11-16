@@ -1,9 +1,20 @@
+/* <<<<<<< tse */
+.main-container {
+  display: grid;
+  background-image: url(C:\Users\temuu\OneDrive\Desktop\test\spell-check-mongolia\front-end\h4.png);
+  background-size: cover;
+  column-gap: 30px;
+  row-gap: 10px;
+  margin-top: 30px;
+  padding: 10px;
+/* =======
 * {
   box-sizing: border-box;
   margin: 0;
   color: white;
 }
 .main-con {
+>>>>>>> main */
   height: 100vh;
   width: 100%;
   background-color: black;
@@ -24,7 +35,80 @@ h1 {
   flex: 2;
   border: 2px solid black;
   display: flex;
+  position: relative;
+  left: 25px;
   flex-direction: column;
+/* <<<<<<< tse */
+  align-items: center;
+  padding-top: 30px;
+  background-color: #f5f5f5;
+  width: 700 px;
+  height: 900 px; /* Эцэг контейнерийн өндөртэй тэнцүү байх */
+  max-width: 800px;
+  border: 2px solid #000;
+  border-top-left-radius: 20px; /* Дээд баруун булан */
+  border-bottom-left-radius: 20px; /* Доод баруун булан */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+h2{
+  color: #000;
+  position: relative;
+  bottom: 10px;
+}
+
+h5{
+  color: #000000a6;
+  font-family: "Inter-Bold", Helvetica;
+  font-size: 15px;
+  font-weight: 700;
+  left: 0;
+  letter-spacing: 0;
+  line-height: normal;
+  position: fixed;
+  top: 0;
+  width: 219px;
+  height: 24px;
+}
+
+.empty {
+  position: absolute;
+  top: 60%; 
+  left: 15%; 
+  transform: translate(-50%, -50%); /* Centers the element */
+}
+
+
+/* Styling the text area */
+textarea {
+  color: #000;
+  width: 611px;
+  height: 300px;
+  flex-shrink: 0;
+  background: rgba(217, 217, 217, 0.03);
+  box-shadow: 7.673px -7.673px 7.673px 5px rgba(174, 174, 174, 0.26) inset, 15.347px -15.347px 15.347px 0px rgba(255, 255, 255, 0.26) inset, -7.673px 7.673px 7.673px 0px rgba(255, 255, 255, 0.26) inset, -15.347px 15.347px 15.347px 0px rgba(174, 174, 174, 0.26) inset;
+  backdrop-filter: blur(9.208000183105469px);
+  
+}
+
+/* Placeholder text style */
+textarea::placeholder {
+  color: #b3b3b3;
+  font-style: italic;
+}
+.icon-container{
+  width: 485px;
+  height: 56px;
+  flex-shrink: 0;
+  border-radius: 15px;
+  border: 2px solid #000;
+  background: #FFF;
+  box-shadow: 5px 5px 4px 3px rgba(0, 0, 0, 0.25);
+  position: relative;
+  top: 30px;
+  bottom: 20px;
+}
+.icons{
+/* =======
   color: black;
   padding: 30px 10px 10px 10px;
 }
@@ -32,6 +116,7 @@ h1 {
   flex: 1.5;
   border: 2px solid black;
   color: black;
+>>>>>>> main */
   display: flex;
   flex-direction: column;
 }
@@ -64,6 +149,101 @@ button {
   flex: 7;
   background-color: red;
 }
+/* <<<<<<< tse */
+.copy {
+  background-image: url('C:\\Users\\temuu\\OneDrive\\Desktop\\test\\spell-check-mongolia\\front-end\\copy.png');
+  transform: scale(0.6);
+  /* box-shadow: 0 0 10px 4px rgba(0, 0, 0, 0.6);  */
+}
+
+
+.paste{
+  background-image: url('C:\\Users\\temuu\\OneDrive\\Desktop\\test\\spell-check-mongolia\\front-end\\paste.png');
+  transform: scale(0.6);
+  /* box-shadow: 0 0 10px 4px rgba(0, 0, 0, 0.6);  */
+}
+
+.delete{
+  background-image: url('C:\\Users\\temuu\\OneDrive\\Desktop\\test\\spell-check-mongolia\\front-end\\delete5.png');
+  transform: scale(0.6);
+  /* box-shadow: 0 0 10px 4px rgba(0, 0, 0, 0.6);  */
+}
+
+.binocular {
+  background-image: url('C:\\Users\\temuu\\OneDrive\\Desktop\\test\\spell-check-mongolia\\front-end\\binocular.png');
+  width: 65px;         
+  height: 65px;        
+  background-size: cover;  
+  transform: scale(1.5);
+  position: relative;
+  top: 170px;
+  left: 120px;
+  /* box-shadow: 0 0 10px 4px rgba(0, 0, 0, 0.6);  Optional: Add shadow if needed */
+}
+
+
+/* Word count and character count container */
+.counts {
+  padding-top: 10px;
+  position: relative;
+  left: 80px;
+  display: flex;
+  color: #000;
+  font-family: Inter;
+  font-size: 12px;
+  font-style: normal;
+  line-height: normal;
+  width: 40%;
+}
+/* Button to check spelling */
+.check-button {
+  position: relative;
+  top: 50px;
+  border: none;
+  color: #fff;
+  background-image: linear-gradient(30deg, #0400ff, #4ce3f7);
+  border-radius: 20px;
+  background-size: 100% auto;
+  font-family: inherit;
+  font-size: 17px;
+  padding: 0.6em 1.5em;
+}
+
+.check-button:hover {
+  background-position: right center;
+  background-size: 200% auto;
+  -webkit-animation: pulse 2s infinite;
+  animation: pulse512 1.5s infinite;
+}
+
+@keyframes pulse512 {
+  0% {
+   box-shadow: 0 0 0 0 #05bada66;
+  }
+ 
+  70% {
+   box-shadow: 0 0 0 10px rgb(218 103 68 / 0%);
+  }
+ 
+  100% {
+   box-shadow: 0 0 0 0 rgb(218 103 68 / 0%);
+  }
+ }
+
+
+
+.analysis{
+  width: 482 px;
+  height: 904 px;
+  border-top-right-radius: 20px; 
+  border-bottom-right-radius: 20px; 
+  flex-shrink: 0;
+  border: 2px solid #000;
+  background: rgba(217, 217, 217);
+  box-shadow: 8.427px -8.427px 8.427px 0px rgba(182, 182, 182, 0.40) inset, -8.427px 8.427px 8.427px 0px rgba(255, 255, 255, 0.40) inset;
+  backdrop-filter: blur(42.13333511352539px);
+  
+/* =======
 .section2-count-word {
   flex: 1;
   display: flex;
@@ -111,6 +291,7 @@ button {
   list-style-type: none;
   padding: 0;
   margin: 0;
+>>>>>>> main */
 }
 
 .suggestions-box li {

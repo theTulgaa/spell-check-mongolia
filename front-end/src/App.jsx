@@ -2,6 +2,29 @@ import { useState, useEffect } from "react";
 import "./App.css";
 import debounce from "lodash.debounce";
 import { Pie } from "react-chartjs-2";
+import { BarChart } from '@mui/x-charts/BarChart';
+
+
+export default function SimpleCharts() {
+  return (
+    <BarChart
+      xAxis={[
+        {
+          id: 'barCategories',
+          data: ['bar A', 'bar B', 'bar C'],
+          scaleType: 'band',
+        },
+      ]}
+      series={[
+        {
+          data: [2, 5, 3],
+        },
+      ]}
+      width={500}
+      height={300}
+    />
+  );
+}
 
 export const App = () => {
   const [inputText, setInputText] = useState("");
@@ -90,53 +113,97 @@ export const App = () => {
   };
 
   return (
-    <>
-      <div className="main-con">
-        <h1>Ugly dude.</h1>
-        <div className="main">
-          <div className="section1">
-            {showText ? (
-              renderTextWithHighlights()
-            ) : (
-              <textarea
-                placeholder="Insert text here....."
-                className="text-area"
-                onChange={(e) => setInputText(e.target.value)}
-                value={inputText}
-              />
-            )}
-            <hr />
-            <div className="section1-btn">
-              <button onClick={getResponse}>
-                {res ? "checking....." : "check"}
-              </button>
-              <button>analyze</button>
+    <div className="main-container">
+      <div className="sub-container">
+        <div className="sub-sub-container">
+        <h2>Untitled document</h2>
+          <textarea placeholder="Энд дарж бичнэ үү" value={text} onChange={handleChange} />
+          <div className="icon-container">
+            <div className="icons">
+              <div className="copy"></div>
+              <div className="paste"></div>
+              <div className="delete"></div>
+              <div className="counts">
+                <div>Үгийн тоо: {countWords(text)}</div>
+                <div>
+                  Тэмдгийн тоо: {countCharacters(text)}/{maxCharacters}
+                </div>
+                {countCharacters(text) >= maxCharacters && (
+                  <div style={{ color: "red" }}>Тэмдэгтийн тоо хэтэрч, таслагдсан!</div>
+                )}
+              </div>
             </div>
           </div>
-          <div className="section2">
-            <div className="section2-analyze">
-              Analyze hiih graph end haragdana sdakud mni. Ongon buur, Zandan
-              tomor 2 sda mni.
-            </div>
-            <div className="section2-count-word">
-              <span className="span1">{wordCount}/50</span>
-            </div>
+
+          <button className="check-button" onClick={pie_chart}>Алдааг шалгах</button>
+        </div>
+
+        <div className="analysis">
+          <h1 style={{fontSize: '30px', textAlign: 'center', color: 'black', fontFamily: 'Outward'}}>Мэдээллийн дүн шинжилгээ</h1>
+          <h1 style={{ fontSize: "24px", textAlign: "center", color: "black" }}>
+            {suggestions.map((suggestion, index) => (
+              <>
+                <span key={index}>{suggestion}</span>
+                <br />
+              </>
+            ))}
+          <div className="empty">
+            <h5>Мэдээлэл алга байна.</h5>
           </div>
-          {activeWord && suggestions.length > 0 && (
-            <div className="suggestions-box">
-              <h4>Suggestions for "{activeWord}":</h4>
-              <ul>
-                {suggestions.map((suggestion, index) => (
-                  <li
-                    key={index}
-                    onClick={() => handleSuggestionClick(suggestion)}
-                  >
-                    {suggestion}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+          <div className="binocular"></div>
+
+            {/* <div className="pie-Chart">
+              <Pie data={data} options={options} />
+            </div> */}
+          </h1>
+// =======
+//     <>
+//       <div className="main-con">
+//         <h1>Ugly dude.</h1>
+//         <div className="main">
+//           <div className="section1">
+//             {showText ? (
+//               renderTextWithHighlights()
+//             ) : (
+//               <textarea
+//                 placeholder="Insert text here....."
+//                 className="text-area"
+//                 onChange={(e) => setInputText(e.target.value)}
+//                 value={inputText}
+//               />
+//             )}
+//             <hr />
+//             <div className="section1-btn">
+//               <button onClick={getResponse}>
+//                 {res ? "checking....." : "check"}
+//               </button>
+//               <button>analyze</button>
+//             </div>
+//           </div>
+//           <div className="section2">
+//             <div className="section2-analyze">
+//               Analyze hiih graph end haragdana sdakud mni. Ongon buur, Zandan
+//               tomor 2 sda mni.
+//             </div>
+//             <div className="section2-count-word">
+//               <span className="span1">{wordCount}/50</span>
+//             </div>
+//           </div>
+//           {activeWord && suggestions.length > 0 && (
+//             <div className="suggestions-box">
+//               <h4>Suggestions for "{activeWord}":</h4>
+//               <ul>
+//                 {suggestions.map((suggestion, index) => (
+//                   <li
+//                     key={index}
+//                     onClick={() => handleSuggestionClick(suggestion)}
+//                   >
+//                     {suggestion}
+//                   </li>
+//                 ))}
+//               </ul>
+//             </div>
+//           )}
         </div>
       </div>
     </>
