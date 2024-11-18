@@ -5,6 +5,7 @@ import os
 import json
 from flask import Response
 import notebook
+# from notebook import prediction_response
 
 app = Flask(__name__)
 cors = CORS(app, origins='*')
@@ -14,7 +15,6 @@ dir = os.path.dirname(os.path.realpath(__file__)) + '/languages/mn_Mn'
 dictionary = Dictionary.from_files(dir)
 
 transfer = """
-хадаглагдах байга
 """
 
 @app.route('/')
@@ -39,18 +39,6 @@ def receive_message():
 
     return jsonify({"response": response_message})
 
-@app.route('/predict')
-def predict():
-    global transfer
-    if not transfer or transfer == '' or transfer == '\n':
-       return jsonify({'prediction': 'NO_INPUT_DATA'})
-    data = [transfer]
-    ob = notebook
-    prediction_result = ob.prediction_repsonse(data)
-
-    response_data = {'prediction': prediction_result}
-    json_data = json.dumps(response_data, ensure_ascii=False)
-    return Response(json_data, content_type="application/json; charset=utf-8")
 
 if __name__ == "__main__":
   app.run(debug=True, port=8080)
