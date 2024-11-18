@@ -1,257 +1,71 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
-import debounce from "lodash.debounce";
-import { Pie } from "react-chartjs-2";
-import { BarChart } from "@mui/x-charts/BarChart";
+import { Chart } from "./features/Chart";
+import { MdContentCopy } from "react-icons/md";
+import { MdDeleteOutline } from "react-icons/md";
+import { BsFileText } from "react-icons/bs";
+import { DuplicatedWords } from "./features/DuplicatedWords";
 
-export default function SimpleCharts() {
-  return (
-    <BarChart
-      xAxis={[
-        {
-          id: "barCategories",
-          data: ["bar A", "bar B", "bar C"],
-          scaleType: "band",
-        },
-      ]}
-      series={[
-        {
-          data: [2, 5, 3],
-        },
-      ]}
-      width={500}
-      height={300}
-    />
-  );
-}
+const VerticalDivider = () => {
+  return <div className="vertical-divider" />;
+};
 
 export const App = () => {
-  const [text, setText] = useState("");
 
-  const [data, setData] = useState("");
-  const [options, setOptions] = useState("");
-
-  const maxCharacters = 1000;
-
-  const [inputText, setInputText] = useState("");
-  const [responseText, setResponseText] = useState("");
-  const [suggestions, setSuggestions] = useState([]);
-  const [res, setRes] = useState(false);
-  const [showText, setShowText] = useState(false);
-  const [misspelledWords, setMisspelledWords] = useState({});
-  const [activeWord, setActiveWord] = useState("");
-  const [prediction, setPrediction] = useState({});
-
-  useEffect(() => {
-    if (inputText.trim() !== "") {
-      const cleaned = inputText.replace(/[.\/:"'-]/g, "");
-      sendRequest(cleaned);
-    }
-  }, [inputText]);
-
-  const sendRequest = async (text) => {
-    try {
-      const response = await fetch("http://127.0.0.1:8080/send", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ message: text }),
-      });
-      const data = await response.json();
-
-      setResponseText(data.response);
-      setMisspelledWords(data.suggestions);
-    } catch (error) {
-      console.error("Error:", error);
-    }
+  const data = {
+    word1: 5,
+    word2: 10,
+    word3: 10,
+    word4: 5,
+    word5: 10,
+    word6: 10,
+    word7: 5,
+    word8: 10,
+    word9: 10,
   };
-
-  const getResponse = async () => {
-    setRes(true);
-    try {
-      const response = await fetch("http://127.0.0.1:8080");
-      const data = await response.json();
-      setMisspelledWords(data.suggestions);
-    } catch (error) {
-      console.error("Error:", error);
-      alert("Something went wrong!");
-    } finally {
-      setRes(false);
-      setShowText(true);
-    }
-  };
-
-  const getPrediction = async () => {
-    try {
-      const response = await fetch("http://127.0.0.1:8080/predict");
-      const data = await response.json();
-      console.log(data.prediction);
-    } catch (error) {
-      console.error("Error:", error);
-      alert("Something went wrong!");
-    }
-  };
-
-  const renderTextWithHighlights = () => {
-    if (!responseText) return null;
-
-    return (
-      <p className="p-1">
-        {" "}
-        {responseText.split(" ").map((word, index) => {
-          if (misspelledWords[word]) {
-            return (
-              <span key={index} className="misspelled-word" onClick={() => handleWordClick(word)}>
-                {word}{" "}
-              </span>
-            );
-          } else {
-            return <span key={index}>{word} </span>;
-          }
-        })}
-      </p>
-    );
-  };
-
-  const handleWordClick = (word) => {
-    setActiveWord(word);
-    setSuggestions(misspelledWords[word] || []);
-  };
-
-  const handleChange = (event) => {
-    const newText = event.target.value;
-
-    // Хэрэв шинэ текстийн урт хэтрэхгүй бол state-г шинэчилнэ
-    if (newText.length <= maxCharacters) {
-      setText(newText);
-      sendRequest(newText);
-    } else {
-      // Хэтэрсэн текстийг тасална
-      setText(newText.slice(0, maxCharacters));
-    }
-  };
-
-  const handleSuggestionClick = (suggestion) => {
-    const newText = responseText.replace(activeWord, suggestion);
-    setResponseText(newText);
-    setSuggestions([]);
-    setText(newText);
-  };
-
-  const countWords = (text) => {
-    const words = text.trim().split(/\s+/);
-    return text.length > 0 ? words.length : 0;
-  };
-
-  const countCharacters = (text) => {
-    return text.length;
-  };
-
-  // энэ зүгээр жишээ хийх гэж байгаа
-  const pie_chart = () => {
-    const data = {
-      labels: ["Developer", "Designer", "Manager"],
-      datasets: [
-        {
-          label: "Salary Distribution",
-          data: [5000, 4500, 6000],
-          backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
-          hoverBackgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
-        },
-      ],
-    };
-    setData(data);
-
-    const options = {
-      responsive: true,
-      plugins: {
-        legend: {
-          position: "top",
-        },
-        tooltip: {
-          enabled: true,
-        },
-      },
-    };
-    setOptions(options);
-  };
-
-  const MouseButtonClick = (event) => {
-    return event.button;
-  };
-
   return (
-    <div className="main-container">
-      <div className="sub-container">
-        <div className="sub-sub-container">
-          <h2>Үгийн алдаа шалгагч</h2>
+    <>
+      <div className="main-con">
+        {/* text bichih bolon shalgah tovch ntr bairlah container */}
+        <div className="left-con">
+          <h1 className="header-text">Saijirdiin baigazde ats ve</h1>
 
-          {showText ? (
-            // <div className="input" contentEditable={true}>
-            <div className="input" onClick={() => setShowText(false)}>
-              {renderTextWithHighlights()}
+          <textarea className="text-area" placeholder="Enter text here..."/>
+
+          {/* 3 tovch hiigeed heden ug heden temdegt orsong tooloh container */}
+
+          <div className="three-btn-con">
+            {/* 3 button heseg yvj bn */}
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <MdContentCopy size={33} />
+              <VerticalDivider />
+              <MdDeleteOutline size={40} />
+              <VerticalDivider />
+              <BsFileText size={30} />
             </div>
-          ) : (
-            <textarea placeholder="Энд дарж бичнэ үү" value={text} onChange={handleChange} />
-            // <div className="input" contentEditable={true} onChange={() => setResponseText(text)}>
-            //   {text}
-            // </div>
-          )}
-          <div className="icon-container">
-            <div className="icons">
-              <div className="copy icon"></div>
-              <div className="icon paste"></div>
-              <div className="icon delete"></div>
-            </div>
-            <div className="counts">
-              <div>Үгийн тоо: {countWords(text)}</div>
-              <div>
-                Тэмдгийн тоо: {countCharacters(text)}/{maxCharacters}
-              </div>
-              {countCharacters(text) >= maxCharacters && (
-                <div style={{ color: "red" }}>Тэмдэгтийн тоо хэтэрч, таслагдсан!</div>
-              )}
+            {/* heden ug heden useg orson heseg */}
+            <div className="count-word-letter-con">
+              <div className="">0/50 words</div>
+              <div className="">0/800 letters</div>
             </div>
           </div>
-
-          <button className="check-button" onClick={getResponse}>
-            Шалгах
-          </button>
-        </div>
-
-        <div className="analysis">
-          <h2>Мэдээллийн дүн шинжилгээ</h2>
-          <h1>
-            {/* {suggestions.map((suggestion, index) => (
-              <>
-                <span key={index}>{suggestion}</span>
-                <br />
-              </>
-            ))} */}
-            <div className="binocular"></div>
-            <div className="empty">
-              <h5>Мэдээлэл алга байна.</h5>
-            </div>
-
-            {/* <div className="pie-Chart">
-              <Pie data={data} options={options} />
-            </div> */}
-          </h1>
-        </div>
-        {activeWord && suggestions.length > 0 && (
-          <div className="suggestions-box">
-            <h4>Suggestions for "{activeWord}":</h4>
-            <ul>
-              {suggestions.map((suggestion, index) => (
-                <li key={index} onClick={() => handleSuggestionClick(suggestion)}>
-                  {suggestion}
-                </li>
-              ))}
-            </ul>
+          <div style={{display: "flex", alignItems: "center", justifyContent: "center", marginTop: "20px"}}>
+            <button className="analyze-btn">Analyze</button>
           </div>
-        )}
+        </div>
+
+        {/*  Medeeelliin dun shinjilgee, davhardsan ug zereg code ene containerd bairlana*/}
+
+        <div className="right-con">
+          <Chart />
+          <p style={{marginTop: "40px", marginLeft: "30px"}}>Davhardsan ugiin jagsaalt</p>
+          <DuplicatedWords data={data} />
+          <div className="count-mis-word-con">
+            <span>45 / 50</span>
+            <p>Aldaanii unelgee</p>
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 };

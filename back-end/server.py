@@ -14,6 +14,7 @@ dir = os.path.dirname(os.path.realpath(__file__)) + '/languages/mn_Mn'
 dictionary = Dictionary.from_files(dir)
 
 transfer = """
+хадаглагдах байга
 """
 
 @app.route('/')
@@ -22,14 +23,7 @@ def index():
     words = transfer.split()
     for word in words:
         if not dictionary.lookup(word):  
-          sugs = []
-          for sug in dictionary.suggest(word):
-            sugs.append(sug)
-            if len(sugs) > 3: break
-          suggestions[word] = sugs
-
-          # suggestions[word] = list(dictionary.suggest(word))
-
+          suggestions[word] = list(dictionary.suggest(word))
     response_data = {'suggestions': suggestions}
     json_data = json.dumps(response_data, ensure_ascii=False)
     return Response(json_data, content_type="application/json; charset=utf-8")
