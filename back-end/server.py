@@ -5,7 +5,6 @@ import os
 import json
 from flask import Response
 import notebook
-# from notebook import prediction_response
 
 app = Flask(__name__)
 cors = CORS(app, origins='*')
@@ -39,6 +38,13 @@ def receive_message():
 
     return jsonify({"response": response_message})
 
+@app.route('/predict', methods=['POST'])
+def predict():
+   
+   data = request.get_json()
+   text = data['inputText']
+   ob = notebook
+   return jsonify({'prediction': ob.prediction_repsonse(text)})
 
 if __name__ == "__main__":
   app.run(debug=True, port=8080)

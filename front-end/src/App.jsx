@@ -6,6 +6,7 @@ import { MdDeleteOutline } from "react-icons/md";
 import { BsFileText } from "react-icons/bs";
 import { DuplicatedWords } from "./features/DuplicatedWords";
 import axios from "axios";
+import { Loader } from "./features/Loader";
 
 const VerticalDivider = () => {
   return <div className="vertical-divider" />;
@@ -38,6 +39,21 @@ export const App = () => {
   const [showTextArea, setShowTextArea] = useState(false);
   // analyze response
   const [news, setNews] = useState({});
+  // loader for check spelling
+  const [loader, setLoader] = useState(false);
+
+  const getPrediction = async () => {
+    const response = await fetch("http://localhost:8080/predict", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ inputText }),
+    });
+
+    const data = await response.json();
+    console.log(data.prediction);
+  };
 
 
 
@@ -73,15 +89,19 @@ export const App = () => {
 
   // get response
   const getResponse = async () => {
+    setLoader(true)
     try {
       const response = await axios.get("http://localhost:8080/");
       setMisspelledWords(response.data.suggestions);
       console.log(response.data.suggestions);
+      setLoader(false)
     } catch (error) {
       console.error("Error:", error);
       alert("Something went wrong!");
+      setLoader(false);
     } finally {
       setShowTextArea(true);
+      setLoader(false)
     }
   };
 
@@ -124,6 +144,13 @@ export const App = () => {
     setResponseText(newText);
     setSuggestions([]);
   };
+
+  if(loader) {
+    return (
+      <Loader />
+    );
+  }
+
 
   return (
     <>
@@ -171,7 +198,7 @@ export const App = () => {
             <button className="analyze-btn" onClick={getResponse}>
               Шалгах
             </button>
-            <button className="analyze-btn">ana</button>
+            <button className="analyze-btn" onClick={getPrediction}>ana</button>
           </div>
         </div>
 
