@@ -51,7 +51,7 @@ body {
   display: flex;
   flex-direction: column;
   border-left: 3px solid black;
-  padding-top: 20px;
+  /* padding-top: 20px; */
 }
 
 .vertical-divider {
@@ -149,4 +149,17 @@ button {
   border: 1px solid black;
   padding: 5px;
   box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.2);
+}
+
+.bino-img {
+  width: 150px;
+}
+
+.if-no-analyze {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgb(178, 167, 167);
+  height: 100%;
+  justify-content: space-evenly;
 }

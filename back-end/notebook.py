@@ -5,9 +5,16 @@ import os
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+import json
+import numpy as np 
+
+app = Flask(__name__)
+cors = CORS(app, origins='*')
+CORS(app)
 
 
-# directory = "dataset"
 directory = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dataset')
 
 main_dir = os.listdir(directory)
@@ -24,7 +31,6 @@ for fold in main_dir:
 Fseries = pd.Series(file_paths, name= 'filepaths')
 Lseries = pd.Series(labels, name='labels')
 train_df = pd.concat([Fseries, Lseries], axis=1)
-# print(train_df.head())
 
 import re
 def clean_text(text):
@@ -39,9 +45,6 @@ for idx, filepath in enumerate(train_df["filepaths"]):
         cleaned_content = clean_text(content)
         train_df.at[idx, 'cleaned_text'] = cleaned_content
 
-
-# train_df["cleaned_text"][0]
-
 vectorizer = TfidfVectorizer(max_features=5000) 
 X = vectorizer.fit_transform(train_df['cleaned_text'])
 y = np.array(train_df["labels"])
@@ -51,17 +54,28 @@ model = LogisticRegression()
 model.fit(X_train, y_train)
 
 y_pred = model.predict(X_test)
-# print(f'Accuracy: {accuracy_score(y_test, y_pred)}')
 
-
-
-def prediction_repsonse(news):
+def prediction_response(news):
     news = clean_text(news)
     news = re.split(r'(?<=\.)\s*', news)
     new_news_vectorized = vectorizer.transform(news)
     probabilities = model.predict_proba(new_news_vectorized)
     return probabilities
 
-# for x, y in zip(probabilities[0] * 100, class_names):
-#     print(f"{y} medee baih magadlal: ", x)
-# r
+
+
+@app.route('/', methods=['POST'])
+def predict():
+    data = request.get_json() 
+    text = data.get('inputText')
+    
+    if not text:
+        return jsonify({'error': 'No input text provided'}), 400
+    prediction = prediction_response(text)
+    prediction_list = prediction.tolist() if isinstance(prediction, np.ndarray) else prediction
+
+    return jsonify({'prediction': prediction_list})
+
+
+if __name__ == "__main__":
+    app.run(port=5002, debug=True)
