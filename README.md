@@ -12,16 +12,16 @@ This is a public repository where you can pull and contribute (review required).
 
 ## Students
 
-- **Erdenetulga Lkagvachuluu** (Fullstack developer)
-- **Temuujin Tserenjav** (UX designer, Frontend)
-- **Nyamdorj Dorjderem** (Fullstack)
-- **Monhtulga Elbegsaikhan** (Fullstack)
+- **Erdenetulga Lkhagvachuluu** (Fullstack developer)
+- **Temuujin Tserenjav** (UX designer, Frontend developer)
+- **Nyamdorj Dorjderem** (Frontend developer)
+- **Monhtulga Elbegsaikhan** (Fullstack developer)
 
 ---
 
 ## Project
 
-**Realtime Mongolian Spellchecker**: A real-time spell checker for the Mongolian language.
+**Realtime Mongolian Spellchecker**: A real-time spell checker for the Mongolian language. (hunspell)
 
 ---
 
@@ -34,4 +34,4 @@ This is a public repository where you can pull and contribute (review required).
 
 ## Contributing
 
-If you'd like to contribute, feel free to fork the repository and submit a pull request. Please make sure to review the guidelines before contributing.
+If you'd like to contribute, feel free to fork the repository and submit a pull request. Please make sure that your code will be needed our approval before merging.
