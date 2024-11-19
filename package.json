@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@mui/x-charts": "^7.22.2",
     "axios": "^1.7.7",
     "cors": "^2.8.5"
   }

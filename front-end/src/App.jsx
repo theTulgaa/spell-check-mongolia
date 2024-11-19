@@ -2,28 +2,28 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import "./App.css";
 import debounce from "lodash.debounce";
 import { Pie } from "react-chartjs-2";
-import { BarChart } from "@mui/x-charts/BarChart";
+// import BarChart from "@mui/x-charts";
 
-export default function SimpleCharts() {
-  return (
-    <BarChart
-      xAxis={[
-        {
-          id: "barCategories",
-          data: ["bar A", "bar B", "bar C"],
-          scaleType: "band",
-        },
-      ]}
-      series={[
-        {
-          data: [2, 5, 3],
-        },
-      ]}
-      width={500}
-      height={300}
-    />
-  );
-}
+// export default function SimpleCharts() {
+//   return (
+//     <BarChart
+//       xAxis={[
+//         {
+//           id: "barCategories",
+//           data: ["bar A", "bar B", "bar C"],
+//           scaleType: "band",
+//         },
+//       ]}
+//       series={[
+//         {
+//           data: [2, 5, 3],
+//         },
+//       ]}
+//       width={500}
+//       height={300}
+//     />
+//   );
+// }
 
 export const App = () => {
   const [text, setText] = useState("");
@@ -233,10 +233,6 @@ export const App = () => {
             <div className="empty">
               <h5>Мэдээлэл алга байна.</h5>
             </div>
-
-            {/* <div className="pie-Chart">
-              <Pie data={data} options={options} />
-            </div> */}
           </h1>
         </div>
         {activeWord && suggestions.length > 0 && (

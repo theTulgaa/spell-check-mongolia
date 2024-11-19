@@ -54,10 +54,12 @@ y_pred = model.predict(X_test)
 # print(f'Accuracy: {accuracy_score(y_test, y_pred)}')
 
 def prediction_repsonse(new_news):
-    
     new_news_vectorized = vectorizer.transform(new_news)
-    probabilities = model.predict_proba(new_news_vectorized)
+    probabilities = model.predict_proba(new_news_vectorized).round(2).tolist()
     return probabilities
 
 # for x, y in zip(probabilities[0] * 100, class_names):
 #     print(f"{y} medee baih magadlal: ", x)
+
+def test(new_news):
+    return 'it works'
