@@ -10,7 +10,7 @@ def manual_stem(word):
     return stems[0] if stems else word
 
 # Ижил төстэй байдлыг шалгах функц
-def are_stems_similar(stem1, stem2, threshold=0.7):
+def are_stems_similar(stem1, stem2, threshold=0.5):
     similarity = SequenceMatcher(None, stem1, stem2).ratio()
     return similarity < threshold  # 70%-иас бага ижил төстэй байвал үнэн гэж үзнэ
 
@@ -34,6 +34,7 @@ def different_stems(words):
     return stems
 
 def count_stems(stems, words):
+
     # Hashable (string эсвэл tuple) төрлийн үндэс үгс ашиглах
     stems = [tuple(stem) if isinstance(stem, list) else stem for stem in stems]
     stem_freq = {}
@@ -45,21 +46,22 @@ def count_stems(stems, words):
             if not are_stems_similar(word_stem, stem):
                 stem_freq[stem] += 1
         
+    sorted_stem = dict(sorted(stem_freq.items(), key=lambda item: item[1], reverse=True))
 
-    return stem_freq
+    return dict(list(sorted_stem.items())[:10])
 
 
 
 # Тест үгс
-news = ["НДШ бол татвар биш НДШ төлөхийг ажилтан ажил олгогчоосоо шаардаж байх ёстой НДШ-ийг хувааж төлснөөр ажилтан маань ирээдүйдээ хэрэглэхээр хадгалж байгаа шимтгэл юм НӨАТ-ын хувьд реформ хийнэ гэдэг амлалт хаана ч байхгүй Хэрэглэгчийн эцсийн татвар байдаг НӨАТ ын хувьд өргөн хэрэглээний бараан дээр байдаггүй Өргөн хэрэглээний инфляцад нөлөөлдөг маш их барааг чөлөөлсөн байдаг Хүн амын бага орлоготой хэсэг дээр НӨАТ бага тусдаг өндөр хэрэглээтэй хэсэг дээр НӨАТ 10 хувь хүртэл байдаг 10 хувиас давахгүй "]
-news = news[0] 
-words = news.split(" ")
-stems = different_stems(words)
+# news = ["НДШ бол татвар биш НДШ төлөхийг ажилтан ажил олгогчоосоо шаардаж байх ёстой НДШ-ийг хувааж төлснөөр ажилтан маань ирээдүйдээ хэрэглэхээр хадгалж байгаа шимтгэл юм НӨАТ-ын хувьд реформ хийнэ гэдэг амлалт хаана ч байхгүй"]
+# news = news[0] 
+# words = news.split(" ")
+# stems = different_stems(words)
 
 # Үр дүнг хэвлэх
-print("Ижил төстэй байдал нь 70%-иас бага үндэс үгс:", stems)
+# print("Ижил төстэй байдал нь 70%-иас бага үндэс үгс:", stems)
 
-freq = count_stems(stems, words)
-print("Ижил үндэстэй үгийн давтамж:", freq)
+# freq = count_stems(stems, words)
+# print("Ижил үндэстэй үгийн давтамж:", freq)
 
  

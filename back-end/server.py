@@ -6,6 +6,8 @@ import json
 from flask import Response
 import notebook
 
+import algorithms.analysis as analysis
+
 app = Flask(__name__)
 cors = CORS(app, origins='*')
 
@@ -22,14 +24,7 @@ def index():
     words = transfer.split()
     for word in words:
         if not dictionary.lookup(word):  
-          sugs = []
-          for sug in dictionary.suggest(word):
-            sugs.append(sug)
-            if len(sugs) > 3: break
-          suggestions[word] = sugs
-
-          # suggestions[word] = list(dictionary.suggest(word))
-
+          suggestions[word] = list(dictionary.suggest(word))
     response_data = {'suggestions': suggestions}
     json_data = json.dumps(response_data, ensure_ascii=False)
     return Response(json_data, content_type="application/json; charset=utf-8")
@@ -45,18 +40,44 @@ def receive_message():
 
     return jsonify({"response": response_message})
 
-@app.route('/predict')
+@app.route('/predict', methods=['POST'])
 def predict():
-    global transfer
-    if not transfer or transfer == '' or transfer == '\n':
-       return jsonify({'prediction': 'NO_INPUT_DATA'})
-    data = [transfer]
-    ob = notebook
-    prediction_result = ob.prediction_repsonse(data)
+   
+   data = request.get_json()
+   text = data['inputText']
+   ob = notebook
+   return jsonify({'prediction': ob.prediction_repsonse(text)})
 
-    response_data = {'prediction': prediction_result}
-    json_data = json.dumps(response_data, ensure_ascii=False)
-    return Response(json_data, content_type="application/json; charset=utf-8")
+@app.route('/frequency', methods=['POST'])
+def frequency():
+    try:
+        # Клиентээс ирсэн текстийг JSON-оос авна
+        data = request.get_json()
+        input_text = data.get('inputText', '')
+
+        if not input_text:
+            return jsonify({"error": "Хоосон текст илгээж болохгүй."}), 400
+
+        words = input_text.split(" ")
+        stems = analysis.different_stems(words)
+        result = analysis.count_stems(stems, words)
+
+        # Үгийн давтамжийг JSON форматаар буцаах
+        return jsonify(result), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# news = ["НДШ бол татвар биш НДШ төлөхийг ажилтан ажил олгогчоосоо шаардаж байх ёстой НДШ-ийг хувааж төлснөөр ажилтан маань ирээдүйдээ хэрэглэхээр хадгалж байгаа шимтгэл юм НӨАТ-ын хувьд реформ хийнэ гэдэг амлалт хаана ч байхгүй Хэрэглэгчийн эцсийн татвар байдаг НӨАТ ын хувьд өргөн хэрэглээний бараан дээр байдаггүй Өргөн хэрэглээний инфляцад нөлөөлдөг маш их барааг чөлөөлсөн байдаг Хүн амын бага орлоготой хэсэг дээр НӨАТ бага тусдаг өндөр хэрэглээтэй хэсэг дээр НӨАТ 10 хувь хүртэл байдаг 10 хувиас давахгүй "]
+# news = news[0] 
+# words = news.split(" ")
+# stems = analysis.different_stems(words)
+
+# Үр дүнг хэвлэх
+# print(f"Ижил төстэй байдал нь 70%-иас бага үндэс үгс: {stems}\n")
+
+# freq = analysis.count_stems(stems, words)
+
+# print("Ижил үндэстэй үгийн давтамж:", freq)
 
 if __name__ == "__main__":
   app.run(debug=True, port=8080)
