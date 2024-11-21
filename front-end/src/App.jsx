@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./App.css";
 import { Chart } from "./features/Chart";
 import { MdContentCopy } from "react-icons/md";
@@ -8,7 +8,7 @@ import { DuplicatedWords } from "./features/DuplicatedWords";
 import axios from "axios";
 import { Loader } from "./features/Loader";
 import img1 from "./assets/binocular.png";
-
+import { elements } from "chart.js";
 
 const VerticalDivider = () => {
   return <div className="vertical-divider" />;
@@ -47,6 +47,9 @@ export const App = () => {
   // loader for check anal i mean analyze
   const [loader2, setLoader2] = useState(false);
 
+  const [modified, setModified] = useState(false);
+  const [list, setList] = useState([]);
+
   // Count words and letter
   useEffect(() => {
     const words = inputText.trim().split(/\s+/).filter(Boolean);
@@ -71,7 +74,7 @@ export const App = () => {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post("http://127.0.0.1:5002/", {
+      const response = await axios.post("http://127.0.0.1:8080/pred", {
         inputText: inputText,
       });
       setNews(response.data.prediction[0]);
@@ -79,7 +82,7 @@ export const App = () => {
     } catch (error) {
       console.error("Error while making prediction:", error);
     } finally {
-      setLoader2(true)
+      setLoader2(true);
     }
   };
 
@@ -109,6 +112,7 @@ export const App = () => {
       } finally {
         setShowTextArea(true);
         setLoader(false);
+        setModified(true);
       }
     }
   };
@@ -118,22 +122,20 @@ export const App = () => {
     if (!responseText) return null;
 
     return (
-      <div className="p-1">
+      <div>
         {" "}
         {responseText.split(" ").map((word, index) => {
+          setList(word);
+          console.log(list, "adsdfad");
           if (misspelledWords[word]) {
             return (
-              <span
-                key={index}
-                className="misspelled-word"
-                onClick={() => handleWordClick(word)}
-              >
+              <span key={index} className="misspelled-word words" onClick={() => handleWordClick(word)}>
                 {word}{" "}
               </span>
             );
           } else {
             return (
-              <span className="correct-word" key={index}>
+              <span className="correct-word words" key={index}>
                 {word}{" "}
               </span>
             );
@@ -153,6 +155,19 @@ export const App = () => {
     setSuggestions([]);
   };
 
+  const setText = () => {
+    const input = document.getElementById("input").innerHTML;
+    console.log(input);
+    setInputText(input);
+
+    const out = input.split(" ");
+    console.log(out);
+
+    for (const word of out) {
+      console.log(word);
+    }
+  };
+
   if (loader) {
     return <Loader />;
   }
@@ -164,7 +179,18 @@ export const App = () => {
         <div className="left-con">
           <h1 className="header-text">Saijirdiin baigazde ats ve</h1>
 
-          {!showTextArea ? (
+          <div
+            contentEditable={true}
+            onInput={setText}
+            className="text-area"
+            id="input"
+            suppressContentEditableWarning={true}
+            value={list}
+          >
+            {}
+          </div>
+
+          {/* {!showTextArea ? (
             <textarea
               className="text-area"
               placeholder="Enter text here..."
@@ -173,7 +199,7 @@ export const App = () => {
             />
           ) : (
             renderTextWithHighlights()
-          )}
+          )} */}
           {/* 3 tovch hiigeed heden ug heden temdegt orsong tooloh container */}
 
           <div className="three-btn-con">
@@ -216,9 +242,7 @@ export const App = () => {
           {loader2 ? (
             <>
               <Chart data={news} />
-              <p style={{ marginTop: "40px", marginLeft: "30px" }}>
-                Давхардсан үгийн жагсаалт
-              </p>
+              <p style={{ marginTop: "40px", marginLeft: "30px" }}>Давхардсан үгийн жагсаалт</p>
               <DuplicatedWords data={data} />
               <div className="count-mis-word-con">
                 <span>45 / 50</span>
@@ -228,10 +252,10 @@ export const App = () => {
           ) : (
             <>
               <div className="if-no-analyze">
-                <p style={{fontSize: "1.3rem", fontWeight: "bolder"}}>Мэдээллийн дүн шижилгээ</p>
-                <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
+                <p style={{ fontSize: "1.3rem", fontWeight: "bolder" }}>Мэдээллийн дүн шижилгээ</p>
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                   <img src={img1} alt="" className="bino-img" />
-                  <p style={{fontWeight: "bolder"}}>мэдээлэл алга байна.</p>
+                  <p style={{ fontWeight: "bolder" }}>мэдээлэл алга байна.</p>
                 </div>
               </div>
             </>
@@ -242,10 +266,7 @@ export const App = () => {
             <h4>Suggestions for "{activeWord}":</h4>
             <ul>
               {suggestions.map((suggestion, index) => (
-                <li
-                  key={index}
-                  onClick={() => handleSuggestionClick(suggestion)}
-                >
+                <li key={index} onClick={() => handleSuggestionClick(suggestion)}>
                   {suggestion}
                 </li>
               ))}
