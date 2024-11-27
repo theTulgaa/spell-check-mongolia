@@ -2,10 +2,10 @@ body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  background-image: url('assets/blob-scene-haikei.png');
-  background-size: cover; 
-  background-repeat: no-repeat; 
-  background-position: center; 
+  background-image: url("assets/blob-scene-haikei.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
   height: 100vh;
   padding: 70px 200px 30px 250px;
 }
@@ -36,6 +36,7 @@ body {
   box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.2);
   outline: none;
   padding: 5px;
+  font-size: 1rem;
 }
 
 .three-btn-con {
@@ -109,14 +110,14 @@ button {
   color: black;
 }
 .suggestions-box {
-  position: fixed;  
-  top: 0;           
-  left: 0;         
-  right: 0;         
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
   background-color: #fff;
   padding: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); 
-  z-index: 1000;    
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
 }
 
 .suggestions-box h4 {
@@ -141,7 +142,7 @@ button {
 }
 
 .suggestions-box li:hover {
-  background-color: #f0f0f0; 
+  background-color: #f0f0f0;
 }
 .p-1 {
   flex: 1;

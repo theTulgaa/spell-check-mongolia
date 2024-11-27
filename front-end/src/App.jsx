@@ -47,8 +47,7 @@ export const App = () => {
   // loader for check anal i mean analyze
   const [loader2, setLoader2] = useState(false);
 
-  const [modified, setModified] = useState(false);
-  const [list, setList] = useState([]);
+  const [saver, setSaver] = useState([]);
 
   // Count words and letter
   useEffect(() => {
@@ -89,14 +88,14 @@ export const App = () => {
   // sends request to server everytime inputText changes
   useEffect(() => {
     if (inputText.trim() !== "") {
-      const cleaned = inputText.replace(/[.\/:"'-]/g, "");
+      const cleaned = inputText.replace(/[.\/:,"'-]/g, "");
       sendRequest(cleaned);
     }
   }, [inputText]);
 
   // get response
   const getResponse = async () => {
-    if (wordCount > 50) {
+    if (wordCount > 500) {
       alert("Ugiin too heterchlee sda mni.");
     } else {
       setLoader(true);
@@ -112,8 +111,27 @@ export const App = () => {
       } finally {
         setShowTextArea(true);
         setLoader(false);
-        setModified(true);
       }
+    }
+  };
+
+  const getSuggestion = async (word) => {
+    try {
+      const response = await axios.post("http://localhost:8080/suggest", {
+        message: word,
+      });
+      misspelledWords[word] = response.data.response;
+      setActiveWord(word);
+      setSuggestions(response.data.response);
+      setSuggestions(misspelledWords[word] || []);
+      console.log(suggestions.length, activeWord, "-------");
+      const fal = Boolean(activeWord && suggestions.length > 0);
+      console.log("fals", fal);
+      console.log(typeof suggestions, "eweewewew");
+      console.log(misspelledWords[word]);
+      // setSuggestions(misspelledWords[word] || []);
+    } catch (error) {
+      console.error("Error:", error);
     }
   };
 
@@ -122,15 +140,20 @@ export const App = () => {
     if (!responseText) return null;
 
     return (
-      <div>
+      <div
+        className="text-area"
+        onClick={() => {
+          setShowTextArea(false);
+          setInputText(saver);
+        }}
+      >
         {" "}
         {responseText.split(" ").map((word, index) => {
-          setList(word);
-          console.log(list, "adsdfad");
           if (misspelledWords[word]) {
             return (
-              <span key={index} className="misspelled-word words" onClick={() => handleWordClick(word)}>
-                {word}{" "}
+              // <span key={index} className="misspelled-word words" onClick={() => handleWordClick(word)}>
+              <span key={index} className="misspelled-word words" onMouseOver={() => getSuggestion(word)}>
+                {word}
               </span>
             );
           } else {
@@ -144,6 +167,7 @@ export const App = () => {
       </div>
     );
   };
+
   const handleWordClick = (word) => {
     setActiveWord(word);
     setSuggestions(misspelledWords[word] || []);
@@ -153,19 +177,7 @@ export const App = () => {
     const newText = responseText.replace(activeWord, suggestion);
     setResponseText(newText);
     setSuggestions([]);
-  };
-
-  const setText = () => {
-    const input = document.getElementById("input").innerHTML;
-    console.log(input);
-    setInputText(input);
-
-    const out = input.split(" ");
-    console.log(out);
-
-    for (const word of out) {
-      console.log(word);
-    }
+    setSaver(newText);
   };
 
   if (loader) {
@@ -179,18 +191,7 @@ export const App = () => {
         <div className="left-con">
           <h1 className="header-text">Saijirdiin baigazde ats ve</h1>
 
-          <div
-            contentEditable={true}
-            onInput={setText}
-            className="text-area"
-            id="input"
-            suppressContentEditableWarning={true}
-            value={list}
-          >
-            {}
-          </div>
-
-          {/* {!showTextArea ? (
+          {!showTextArea ? (
             <textarea
               className="text-area"
               placeholder="Enter text here..."
@@ -198,8 +199,17 @@ export const App = () => {
               value={inputText}
             />
           ) : (
+            // <div
+            //   contentEditable={true}
+            //   suppressContentEditableWarning={true}
+            //   className="text-area"
+            //   onChange={(e) => setInputText(e.target.value)}
+            // >
+            //   {inputText}
+            // </div>
+            // <p>it is hehre</p>
             renderTextWithHighlights()
-          )} */}
+          )}
           {/* 3 tovch hiigeed heden ug heden temdegt orsong tooloh container */}
 
           <div className="three-btn-con">
@@ -261,7 +271,7 @@ export const App = () => {
             </>
           )}
         </div>
-        {activeWord && suggestions.length > 0 && (
+        {Boolean(activeWord && suggestions.length > 0) && (
           <div className="suggestions-box">
             <h4>Suggestions for "{activeWord}":</h4>
             <ul>

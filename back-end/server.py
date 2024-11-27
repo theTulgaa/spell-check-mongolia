@@ -23,7 +23,7 @@ def index():
     words = transfer.split()
     for word in words:
         if not dictionary.lookup(word):  
-        #   suggestions[word] = list(dictionary.suggest(word))
+            # suggestions[word] = list(dictionary.suggest(word))
             suggestions[word] = 1
     response_data = {'suggestions': suggestions}
     json_data = json.dumps(response_data, ensure_ascii=False)
@@ -51,6 +51,15 @@ def predict():
     prediction_list = prediction.tolist() if isinstance(prediction, np.ndarray) else prediction
 
     return jsonify({'prediction': prediction_list})
+
+@app.route('/suggest', methods=['POST'])
+def suggest():
+    suggestions = {}
+    data = request.json
+    word = data.get("message", "")
+    suggestions = list(dictionary.suggest(word))
+
+    return jsonify({"response": suggestions})
 
 if __name__ == "__main__":
   app.run(debug=True, port=8080)
