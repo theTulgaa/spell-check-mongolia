@@ -1,116 +1,203 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
-import debounce from "lodash.debounce";
-import { Pie } from "react-chartjs-2";
-import { BarChart } from "@mui/x-charts/BarChart";
+import { Chart } from "./features/Chart";
+import { MdContentCopy } from "react-icons/md";
+import { MdDeleteOutline } from "react-icons/md";
+import { BsFileText } from "react-icons/bs";
+import { DuplicatedWords } from "./features/DuplicatedWords";
+import axios from "axios";
+import { Loader } from "./features/Loader";
+import img1 from "./assets/binocular.png";
+import { elements } from "chart.js";
 
-export default function SimpleCharts() {
-  return (
-    <BarChart
-      xAxis={[
-        {
-          id: "barCategories",
-          data: ["bar A", "bar B", "bar C"],
-          scaleType: "band",
-        },
-      ]}
-      series={[
-        {
-          data: [2, 5, 3],
-        },
-      ]}
-      width={500}
-      height={300}
-    />
-  );
-}
+const VerticalDivider = () => {
+  return <div className="vertical-divider" />;
+};
 
 export const App = () => {
-  const [text, setText] = useState("");
+  const data = {
+    word1: 5,
+    word2: 10,
+    word3: 10,
+    word4: 5,
+    word5: 10,
+    word6: 10,
+    word7: 5,
+    word8: 10,
+    word9: 10,
+  };
 
-  const [data, setData] = useState("");
-  const [options, setOptions] = useState("");
-
-  const maxCharacters = 1000;
-
+  // input text
   const [inputText, setInputText] = useState("");
+  // word counter
+  const [wordCount, setWordCount] = useState(0);
+  // letter counter
+  const [letterCount, setLetterCount] = useState(0);
   const [responseText, setResponseText] = useState("");
   const [suggestions, setSuggestions] = useState([]);
-  const [res, setRes] = useState(false);
-  const [showText, setShowText] = useState(false);
   const [misspelledWords, setMisspelledWords] = useState({});
   const [activeWord, setActiveWord] = useState("");
-  const [prediction, setPrediction] = useState({});
+  // when button clicked textarea will be hidden
+  const [showTextArea, setShowTextArea] = useState(false);
+  // analyze response
+  const [news, setNews] = useState([1, 1, 1, 1, 1, 1]);
+  // loader for check spelling
+  const [loader, setLoader] = useState(false);
 
+  // loader for check anal i mean analyze
+  const [loader2, setLoader2] = useState(false);
+
+  const [wordSaver, setWordSaver] = useState("");
+
+  const ButtonWithIcon = ({ icon: Icon, onClick, tooltip }) => (
+    <button
+      className="icon-btn"
+      onClick={onClick}
+      title={tooltip}
+      style={{ background: "none", border: "none", cursor: "pointer" }}
+    >
+      <Icon size={30} />
+    </button>
+  );
+
+  // Count words and letter
+  useEffect(() => {
+    if (!inputText) {
+      const words = inputText.trim().split(/\s+/).filter(Boolean);
+      setWordCount(words.length);
+
+      const letters = inputText.replace(/\s+/g, "").length;
+      setLetterCount(letters);
+    }
+  }, [inputText]);
+
+  // send request
+  const sendRequest = async (text) => {
+    try {
+      const response = await axios.post("http://localhost:8080/send", {
+        message: text,
+      });
+      setResponseText(response.data.response);
+      setMisspelledWords(response.data.suggestions || {});
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const response = await axios.post("http://127.0.0.1:8080/pred", {
+        inputText: inputText,
+      });
+      setNews(response.data.prediction[0]);
+      console.log(response.data.prediction);
+    } catch (error) {
+      console.error("Error while making prediction:", error);
+    } finally {
+      setLoader2(true);
+    }
+  };
+
+  // sends request to server everytime inputText changes
   useEffect(() => {
     if (inputText.trim() !== "") {
-      const cleaned = inputText.replace(/[.\/:"'-]/g, "");
+      // if (!inputText) {
+      const cleaned = inputText.replace(/[.\/:,"'-]/g, "");
       sendRequest(cleaned);
     }
   }, [inputText]);
 
-  const sendRequest = async (text) => {
-    try {
-      const response = await fetch("http://127.0.0.1:8080/send", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ message: text }),
-      });
-      const data = await response.json();
-
-      setResponseText(data.response);
-      setMisspelledWords(data.suggestions);
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
-
+  // get response
   const getResponse = async () => {
-    setRes(true);
-    try {
-      const response = await fetch("http://127.0.0.1:8080");
-      const data = await response.json();
-      setMisspelledWords(data.suggestions);
-    } catch (error) {
-      console.error("Error:", error);
-      alert("Something went wrong!");
-    } finally {
-      setRes(false);
-      setShowText(true);
+    if (wordCount > 500) {
+      alert("Ugiin too heterchlee sda mni.");
+    } else {
+      setLoader(true);
+      try {
+        const response = await axios.get("http://localhost:8080/");
+        setMisspelledWords(response.data.suggestions);
+        console.log(response.data.suggestions);
+        setLoader(false);
+      } catch (error) {
+        console.error("Error:", error);
+        alert("Something went wrong!");
+        setLoader(false);
+      } finally {
+        setShowTextArea(true);
+        setLoader(false);
+      }
     }
   };
 
-  const getPrediction = async () => {
+  const getSuggestion = async (word) => {
     try {
-      const response = await fetch("http://127.0.0.1:8080/predict");
-      const data = await response.json();
-      console.log(data.prediction);
+      const response = await axios.post("http://localhost:8080/suggest", {
+        message: word,
+      });
+      misspelledWords[word] = response.data.response;
+      setActiveWord(word);
+      setSuggestions(response.data.response);
+      setSuggestions(misspelledWords[word] || []);
     } catch (error) {
       console.error("Error:", error);
-      alert("Something went wrong!");
     }
   };
 
+  const handleCopy = () => {
+    setInputText(wordSaver);
+    navigator.clipboard.writeText(inputText).then(
+      () => alert("Text copied!"),
+      (err) => console.error("Could not copy text:", err)
+    );
+  };
+
+  // Delete text
+  const handleDelete = () => {
+    if (window.confirm("Are you sure you want to clear the text?")) {
+      setInputText("");
+    }
+  };
+
+  // Simulate paste functionality
+  const handlePaste = () => {
+    navigator.clipboard.readText().then(
+      (text) => setInputText((prev) => prev + text),
+      (err) => console.error("Could not paste text:", err)
+    );
+  };
+
+  // rendering misspeled and correct words together
   const renderTextWithHighlights = () => {
+    // setInputText(wordSaver);
     if (!responseText) return null;
 
     return (
-      <p className="p-1">
+      <div
+        className="text-area"
+        onClick={() => {
+          setShowTextArea(false);
+          // console.log(wordSaver);
+          // setInputText(wordSaver);
+        }}
+      >
         {" "}
         {responseText.split(" ").map((word, index) => {
           if (misspelledWords[word]) {
             return (
-              <span key={index} className="misspelled-word" onClick={() => handleWordClick(word)}>
-                {word}{" "}
+              // <span key={index} className="misspelled-word words" onClick={() => handleWordClick(word)}>
+              <span key={index} className="misspelled-word words" onMouseOver={() => getSuggestion(word)}>
+                {word}
               </span>
             );
           } else {
-            return <span key={index}>{word} </span>;
+            return (
+              <span className="correct-word words" key={index}>
+                {word}{" "}
+              </span>
+            );
           }
         })}
-      </p>
+      </div>
     );
   };
 
@@ -119,132 +206,131 @@ export const App = () => {
     setSuggestions(misspelledWords[word] || []);
   };
 
-  const handleChange = (event) => {
-    const newText = event.target.value;
-
-    // Хэрэв шинэ текстийн урт хэтрэхгүй бол state-г шинэчилнэ
-    if (newText.length <= maxCharacters) {
-      setText(newText);
-      sendRequest(newText);
-    } else {
-      // Хэтэрсэн текстийг тасална
-      setText(newText.slice(0, maxCharacters));
-    }
-  };
-
   const handleSuggestionClick = (suggestion) => {
     const newText = responseText.replace(activeWord, suggestion);
     setResponseText(newText);
     setSuggestions([]);
-    setText(newText);
+    // setWordSaver(newText);
+    setInputText(newText);
   };
 
-  const countWords = (text) => {
-    const words = text.trim().split(/\s+/);
-    return text.length > 0 ? words.length : 0;
-  };
-
-  const countCharacters = (text) => {
-    return text.length;
-  };
-
-  // энэ зүгээр жишээ хийх гэж байгаа
-  const pie_chart = () => {
-    const data = {
-      labels: ["Developer", "Designer", "Manager"],
-      datasets: [
-        {
-          label: "Salary Distribution",
-          data: [5000, 4500, 6000],
-          backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
-          hoverBackgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
-        },
-      ],
-    };
-    setData(data);
-
-    const options = {
-      responsive: true,
-      plugins: {
-        legend: {
-          position: "top",
-        },
-        tooltip: {
-          enabled: true,
-        },
-      },
-    };
-    setOptions(options);
-  };
-
-  const MouseButtonClick = (event) => {
-    return event.button;
-  };
+  if (loader) {
+    return <Loader />;
+  }
 
   return (
-    <div className="main-container">
-      <div className="sub-container">
-        <div className="sub-sub-container">
-          <h2>Үгийн алдаа шалгагч</h2>
+    <>
+      <div className="main-con">
+        {/* text bichih bolon shalgah tovch ntr bairlah container */}
+        <div className="left-con">
+          <h1 className="header-text">Saijirdiin baigazde ats ve</h1>
 
-          {showText ? (
-            // <div className="input" contentEditable={true}>
-            <div className="input" onClick={() => setShowText(false)}>
-              {renderTextWithHighlights()}
-            </div>
+          {!showTextArea ? (
+            <textarea
+              className="text-area"
+              placeholder="Enter text here..."
+              onChange={(e) => {
+                setInputText(e.target.value);
+              }}
+              value={inputText}
+            />
           ) : (
-            <textarea placeholder="Энд дарж бичнэ үү" value={text} onChange={handleChange} />
-            // <div className="input" contentEditable={true} onChange={() => setResponseText(text)}>
-            //   {text}
+            // <div
+            //   contentEditable={true}
+            //   suppressContentEditableWarning={true}
+            //   className="text-area"
+            //   onChange={(e) => {
+            //     setInputText(e.target.value);
+            //     console.log(inputText);
+            //   }}
+            // >
+            //   {inputText}
             // </div>
+
+            renderTextWithHighlights()
           )}
-          <div className="icon-container">
-            <div className="icons">
-              <div className="copy icon"></div>
-              <div className="icon paste"></div>
-              <div className="icon delete"></div>
+          {/* 3 tovch hiigeed heden ug heden temdegt orsong tooloh container */}
+
+          <div className="three-btn-con">
+            {/* 3 button heseg yvj bn */}
+            {/* <div style={{ display: "flex", alignItems: "center" }}>
+              <MdContentCopy size={33} />
+              <VerticalDivider />
+              <MdDeleteOutline size={40} />
+              <VerticalDivider />
+              <BsFileText size={30} />
+            </div> */}
+
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <ButtonWithIcon icon={MdContentCopy} onClick={handleCopy} tooltip="Copy Text" />
+              <VerticalDivider />
+              <ButtonWithIcon icon={MdDeleteOutline} onClick={handleDelete} tooltip="Clear Text" />
+              <VerticalDivider />
+              <ButtonWithIcon icon={BsFileText} onClick={handlePaste} tooltip="Paste Text" />
             </div>
-            <div className="counts">
-              <div>Үгийн тоо: {countWords(text)}</div>
-              <div>
-                Тэмдгийн тоо: {countCharacters(text)}/{maxCharacters}
-              </div>
-              {countCharacters(text) >= maxCharacters && (
-                <div style={{ color: "red" }}>Тэмдэгтийн тоо хэтэрч, таслагдсан!</div>
-              )}
+            {/* heden ug heden useg orson heseg */}
+            <div className="count-word-letter-con">
+              <div className="">{wordCount}/50 үг</div>
+              <div className="">{letterCount}/800 тэмдэгт</div>
             </div>
           </div>
-
-          <button className="check-button" onClick={getResponse}>
-            Шалгах
-          </button>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              marginTop: "20px",
+              flexDirection: "column",
+              gap: "5px",
+            }}
+          >
+            <button className="analyze-btn" onClick={getResponse}>
+              Шалгах
+            </button>
+            <button className="analyze-btn" onClick={handleSubmit}>
+              Анализ
+            </button>
+          </div>
         </div>
 
-        <div className="analysis">
-          <h2>Мэдээллийн дүн шинжилгээ</h2>
-          <h1>
-            {/* {suggestions.map((suggestion, index) => (
-              <>
-                <span key={index}>{suggestion}</span>
-                <br />
-              </>
-            ))} */}
-            <div className="binocular"></div>
-            <div className="empty">
-              <h5>Мэдээлэл алга байна.</h5>
-            </div>
+        {/*  Medeeelliin dun shinjilgee, davhardsan ug zereg code ene containerd bairlana*/}
 
-            {/* <div className="pie-Chart">
-              <Pie data={data} options={options} />
-            </div> */}
-          </h1>
+        <div className="right-con">
+          {loader2 ? (
+            <>
+              <Chart data={news} />
+              <p style={{ marginTop: "40px", marginLeft: "30px" }}>Давхардсан үгийн жагсаалт</p>
+              <DuplicatedWords data={data} />
+              <div className="count-mis-word-con">
+                <span>45 / 50</span>
+                <p>Алдааны үнэлгээ</p>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="if-no-analyze">
+                <p style={{ fontSize: "1.3rem", fontWeight: "bolder" }}>Мэдээллийн дүн шижилгээ</p>
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                  <img src={img1} alt="" className="bino-img" />
+                  <p style={{ fontWeight: "bolder" }}>мэдээлэл алга байна.</p>
+                </div>
+              </div>
+            </>
+          )}
         </div>
-        {activeWord && suggestions.length > 0 && (
+        {Boolean(activeWord && suggestions.length > 0) && (
           <div className="suggestions-box">
             <h4>Suggestions for "{activeWord}":</h4>
             <ul>
               {suggestions.map((suggestion, index) => (
-                <li key={index} onClick={() => handleSuggestionClick(suggestion)}>
+                <li
+                  key={index}
+                  onClick={() => {
+                    handleSuggestionClick(suggestion);
+                    setWordSaver("wordSaver changed");
+                    console.log(wordSaver);
+                  }}
+                >
                   {suggestion}
                 </li>
               ))}
@@ -252,6 +338,6 @@ export const App = () => {
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 };
