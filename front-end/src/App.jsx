@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import { Chart } from "./features/Chart";
 import { MdContentCopy } from "react-icons/md";
@@ -47,15 +47,28 @@ export const App = () => {
   // loader for check anal i mean analyze
   const [loader2, setLoader2] = useState(false);
 
-  const [saver, setSaver] = useState([]);
+  const [wordSaver, setWordSaver] = useState("");
+
+  const ButtonWithIcon = ({ icon: Icon, onClick, tooltip }) => (
+    <button
+      className="icon-btn"
+      onClick={onClick}
+      title={tooltip}
+      style={{ background: "none", border: "none", cursor: "pointer" }}
+    >
+      <Icon size={30} />
+    </button>
+  );
 
   // Count words and letter
   useEffect(() => {
-    const words = inputText.trim().split(/\s+/).filter(Boolean);
-    setWordCount(words.length);
+    if (!inputText) {
+      const words = inputText.trim().split(/\s+/).filter(Boolean);
+      setWordCount(words.length);
 
-    const letters = inputText.replace(/\s+/g, "").length;
-    setLetterCount(letters);
+      const letters = inputText.replace(/\s+/g, "").length;
+      setLetterCount(letters);
+    }
   }, [inputText]);
 
   // send request
@@ -88,6 +101,7 @@ export const App = () => {
   // sends request to server everytime inputText changes
   useEffect(() => {
     if (inputText.trim() !== "") {
+      // if (!inputText) {
       const cleaned = inputText.replace(/[.\/:,"'-]/g, "");
       sendRequest(cleaned);
     }
@@ -124,19 +138,37 @@ export const App = () => {
       setActiveWord(word);
       setSuggestions(response.data.response);
       setSuggestions(misspelledWords[word] || []);
-      console.log(suggestions.length, activeWord, "-------");
-      const fal = Boolean(activeWord && suggestions.length > 0);
-      console.log("fals", fal);
-      console.log(typeof suggestions, "eweewewew");
-      console.log(misspelledWords[word]);
-      // setSuggestions(misspelledWords[word] || []);
     } catch (error) {
       console.error("Error:", error);
     }
   };
 
+  const handleCopy = () => {
+    setInputText(wordSaver);
+    navigator.clipboard.writeText(inputText).then(
+      () => alert("Text copied!"),
+      (err) => console.error("Could not copy text:", err)
+    );
+  };
+
+  // Delete text
+  const handleDelete = () => {
+    if (window.confirm("Are you sure you want to clear the text?")) {
+      setInputText("");
+    }
+  };
+
+  // Simulate paste functionality
+  const handlePaste = () => {
+    navigator.clipboard.readText().then(
+      (text) => setInputText((prev) => prev + text),
+      (err) => console.error("Could not paste text:", err)
+    );
+  };
+
   // rendering misspeled and correct words together
   const renderTextWithHighlights = () => {
+    // setInputText(wordSaver);
     if (!responseText) return null;
 
     return (
@@ -144,7 +176,8 @@ export const App = () => {
         className="text-area"
         onClick={() => {
           setShowTextArea(false);
-          setInputText(saver);
+          // console.log(wordSaver);
+          // setInputText(wordSaver);
         }}
       >
         {" "}
@@ -177,7 +210,8 @@ export const App = () => {
     const newText = responseText.replace(activeWord, suggestion);
     setResponseText(newText);
     setSuggestions([]);
-    setSaver(newText);
+    // setWordSaver(newText);
+    setInputText(newText);
   };
 
   if (loader) {
@@ -195,7 +229,9 @@ export const App = () => {
             <textarea
               className="text-area"
               placeholder="Enter text here..."
-              onChange={(e) => setInputText(e.target.value)}
+              onChange={(e) => {
+                setInputText(e.target.value);
+              }}
               value={inputText}
             />
           ) : (
@@ -203,23 +239,34 @@ export const App = () => {
             //   contentEditable={true}
             //   suppressContentEditableWarning={true}
             //   className="text-area"
-            //   onChange={(e) => setInputText(e.target.value)}
+            //   onChange={(e) => {
+            //     setInputText(e.target.value);
+            //     console.log(inputText);
+            //   }}
             // >
             //   {inputText}
             // </div>
-            // <p>it is hehre</p>
+
             renderTextWithHighlights()
           )}
           {/* 3 tovch hiigeed heden ug heden temdegt orsong tooloh container */}
 
           <div className="three-btn-con">
             {/* 3 button heseg yvj bn */}
-            <div style={{ display: "flex", alignItems: "center" }}>
+            {/* <div style={{ display: "flex", alignItems: "center" }}>
               <MdContentCopy size={33} />
               <VerticalDivider />
               <MdDeleteOutline size={40} />
               <VerticalDivider />
               <BsFileText size={30} />
+            </div> */}
+
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <ButtonWithIcon icon={MdContentCopy} onClick={handleCopy} tooltip="Copy Text" />
+              <VerticalDivider />
+              <ButtonWithIcon icon={MdDeleteOutline} onClick={handleDelete} tooltip="Clear Text" />
+              <VerticalDivider />
+              <ButtonWithIcon icon={BsFileText} onClick={handlePaste} tooltip="Paste Text" />
             </div>
             {/* heden ug heden useg orson heseg */}
             <div className="count-word-letter-con">
@@ -276,7 +323,14 @@ export const App = () => {
             <h4>Suggestions for "{activeWord}":</h4>
             <ul>
               {suggestions.map((suggestion, index) => (
-                <li key={index} onClick={() => handleSuggestionClick(suggestion)}>
+                <li
+                  key={index}
+                  onClick={() => {
+                    handleSuggestionClick(suggestion);
+                    setWordSaver("wordSaver changed");
+                    console.log(wordSaver);
+                  }}
+                >
                   {suggestion}
                 </li>
               ))}
