@@ -7,6 +7,8 @@ import { BsFileText } from "react-icons/bs";
 import { DuplicatedWords } from "./features/DuplicatedWords";
 import axios from "axios";
 import { Loader } from "./features/Loader";
+import img1 from "./assets/binocular.png";
+
 
 const VerticalDivider = () => {
   return <div className="vertical-divider" />;
@@ -25,8 +27,8 @@ export const App = () => {
     word9: 10,
   };
 
-  // dublicate stems
   const [resdata, setFreqStem] = useState("");
+
   // input text
   const [inputText, setInputText] = useState("");
   // word counter
@@ -40,23 +42,52 @@ export const App = () => {
   // when button clicked textarea will be hidden
   const [showTextArea, setShowTextArea] = useState(false);
   // analyze response
-  const [news, setNews] = useState({});
+  const [news, setNews] = useState([1, 1, 1, 1, 1, 1]);
   // loader for check spelling
   const [loader, setLoader] = useState(false);
 
-  const getPrediction = async () => {
-    const response = await fetch("http://localhost:8080/predict", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      // body: JSON.stringify({ inputText }),
-    });
+  // loader for check anal i mean analyze
+  const [loader2, setLoader2] = useState(false);
 
-    const data = await response.json();
-    console.log(data.prediction);
+  // Count words and letter
+  useEffect(() => {
+    const words = inputText.trim().split(/\s+/).filter(Boolean);
+    setWordCount(words.length);
+
+    const letters = inputText.replace(/\s+/g, "").length;
+    setLetterCount(letters);
+  }, [inputText]);
+
+  // send request
+  const sendRequest = async (text) => {
+    try {
+      const response = await axios.post("http://localhost:8080/send", {
+        message: text,
+      });
+      setResponseText(response.data.response);
+      setMisspelledWords(response.data.suggestions || {});
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
+  const handleSubmit = async () => {
+    getStemFreq();
+    
+    try {
+      const response = await axios.post("http://127.0.0.1:5002/", {
+        inputText: inputText,
+      });
+      setNews(response.data.prediction[0]);
+      console.log(response.data.prediction);
+    } catch (error) {
+      console.error("Error while making prediction:", error);
+    } finally {
+      setLoader2(true)
+    }
+  };
+
+  // count stems 
   const getStemFreq = async () => {
     try {
       const response = await fetch("http://localhost:8080/frequency", {
@@ -82,30 +113,6 @@ export const App = () => {
   useEffect(() => {
     console.log("Шинэчлэгдсэн resdata:", resdata);
   }, [resdata]);
-  
-
-
-  // Count words and letter
-  useEffect(() => {
-    const words = inputText.trim().split(/\s+/).filter(Boolean);
-    setWordCount(words.length);
-
-    const letters = inputText.replace(/\s+/g, "").length;
-    setLetterCount(letters);
-  }, [inputText]);
-
-  // send request
-  const sendRequest = async (text) => {
-    try {
-      const response = await axios.post("http://localhost:8080/send", {
-        message: text,
-      });
-      setResponseText(response.data.response);
-      setMisspelledWords(response.data.suggestions || {});
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
 
   // sends request to server everytime inputText changes
   useEffect(() => {
@@ -117,19 +124,23 @@ export const App = () => {
 
   // get response
   const getResponse = async () => {
-    setLoader(true)
-    try {
-      const response = await axios.get("http://localhost:8080/");
-      setMisspelledWords(response.data.suggestions);
-      console.log(response.data.suggestions);
-      setLoader(false)
-    } catch (error) {
-      console.error("Error:", error);
-      alert("Something went wrong!");
-      setLoader(false);
-    } finally {
-      setShowTextArea(true);
-      setLoader(false)
+    if (wordCount > 50) {
+      alert("Ugiin too heterchlee sda mni.");
+    } else {
+      setLoader(true);
+      try {
+        const response = await axios.get("http://localhost:8080/");
+        setMisspelledWords(response.data.suggestions);
+        console.log(response.data.suggestions);
+        setLoader(false);
+      } catch (error) {
+        console.error("Error:", error);
+        alert("Something went wrong!");
+        setLoader(false);
+      } finally {
+        setShowTextArea(true);
+        setLoader(false);
+      }
     }
   };
 
@@ -173,12 +184,9 @@ export const App = () => {
     setSuggestions([]);
   };
 
-  if(loader) {
-    return (
-      <Loader />
-    );
+  if (loader) {
+    return <Loader />;
   }
-
 
   return (
     <>
@@ -187,15 +195,16 @@ export const App = () => {
         <div className="left-con">
           <h1 className="header-text">Saijirdiin baigazde ats ve</h1>
 
-          {!showTextArea ? 
-          (<textarea
-            className="text-area"
-            placeholder="Enter text here..."
-            onChange={(e) => setInputText(e.target.value)}
-            value={inputText}
-          />) :
-          renderTextWithHighlights()
-        }
+          {!showTextArea ? (
+            <textarea
+              className="text-area"
+              placeholder="Enter text here..."
+              onChange={(e) => setInputText(e.target.value)}
+              value={inputText}
+            />
+          ) : (
+            renderTextWithHighlights()
+          )}
           {/* 3 tovch hiigeed heden ug heden temdegt orsong tooloh container */}
 
           <div className="three-btn-con">
@@ -220,28 +229,44 @@ export const App = () => {
               justifyContent: "center",
               marginTop: "20px",
               flexDirection: "column",
-              gap: "5px"
+              gap: "5px",
             }}
           >
             <button className="analyze-btn" onClick={getResponse}>
               Шалгах
             </button>
-            <button className="analyze-btn" onClick={getStemFreq}>ana</button>
+            <button className="analyze-btn" onClick={handleSubmit}>
+              Анализ
+            </button>
           </div>
         </div>
 
         {/*  Medeeelliin dun shinjilgee, davhardsan ug zereg code ene containerd bairlana*/}
 
         <div className="right-con">
-          <Chart />
-          <p style={{ marginTop: "40px", marginLeft: "30px" }}>
-            Давхардсан үгийн жагсаалт
-          </p>
-          <DuplicatedWords data={resdata} />
-          <div className="count-mis-word-con">
-            <span>45 / 50</span>
-            <p>Алдааны үнэлгээ</p>
-          </div>
+          {loader2 ? (
+            <>
+              <Chart data={news} />
+              <p style={{ marginTop: "40px", marginLeft: "30px" }}>
+                Давхардсан үгийн жагсаалт
+              </p>
+              <DuplicatedWords data={resdata} />
+              <div className="count-mis-word-con">
+                <span>45 / 50</span>
+                <p>Алдааны үнэлгээ</p>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="if-no-analyze">
+                <p style={{fontSize: "1.3rem", fontWeight: "bolder"}}>Мэдээллийн дүн шижилгээ</p>
+                <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
+                  <img src={img1} alt="" className="bino-img" />
+                  <p style={{fontWeight: "bolder"}}>мэдээлэл алга байна.</p>
+                </div>
+              </div>
+            </>
+          )}
         </div>
         {activeWord && suggestions.length > 0 && (
           <div className="suggestions-box">

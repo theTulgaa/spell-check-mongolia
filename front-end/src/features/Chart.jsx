@@ -5,13 +5,13 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 // Register the necessary components
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-export const Chart = () => {
-  const data = {
-    labels: ["Red", "Blue", "Yellow", "Green", "Gray", "White"],
+export const Chart = ({data}) => {
+  const data1 = {
+    labels: ["entertainment", "finance", "health", "history", "politic", "sport"],
     datasets: [
       {
         label: "My First Dataset",
-        data: [300, 50, 100, 200, 400, 100],
+        data: data,
         backgroundColor: [
           "rgb(255, 99, 132)",
           "rgb(54, 162, 235)",
@@ -35,9 +35,9 @@ export const Chart = () => {
   };
 
   return (
-    <div style={{ height: "300px", display: "flex", alignItems: "center", flexDirection: "column"}}>
+    <div style={{ height: "300px", display: "flex", alignItems: "center", flexDirection: "column", marginTop: "20px" }}>
         <h2>Шинжилгээ хийв.</h2>
-      <Doughnut data={data} options={options} />
+      <Doughnut data={data1} options={options} />
     </div>
   );
 };

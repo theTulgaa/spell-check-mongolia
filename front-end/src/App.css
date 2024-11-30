@@ -1,3 +1,4 @@
+
 body {
   margin: 0;
   padding: 0;
@@ -149,4 +150,169 @@ button {
   border: 1px solid black;
   padding: 5px;
   box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.2);
+}
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-image: url('assets/blob-scene-haikei.png');
+  background-size: cover; 
+  background-repeat: no-repeat; 
+  background-position: center; 
+  height: 100vh;
+  padding: 70px 200px 30px 250px;
+}
+
+.main-con {
+  display: flex;
+  background-color: white;
+  width: 100%;
+  height: 70vh;
+  border-bottom-left-radius: 20px;
+  border-top-left-radius: 20px;
+}
+
+.left-con {
+  display: flex;
+  flex-direction: column;
+  flex: 3;
+  padding: 50px;
+}
+
+.header-text {
+  margin: 0px 0px 10px 0px;
+}
+
+.text-area {
+  resize: none;
+  flex: 1;
+  box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.2);
+  outline: none;
+  padding: 5px;
+}
+
+.three-btn-con {
+  display: flex;
+  border: 2px solid #000;
+  margin: 30px 50px 0px 50px;
+  justify-content: space-around;
+  border-radius: 5px;
+}
+
+.right-con {
+  flex: 2.5;
+  display: flex;
+  flex-direction: column;
+  border-left: 3px solid black;
+  /* padding-top: 20px; */
+}
+
+.vertical-divider {
+  height: 30px;
+  width: 2px;
+  background-color: #000;
+  margin: 0 10px;
+}
+
+.analyze-btn {
+  padding: 12px 5px 12px 5px;
+  width: 200px;
+  background-color: rgba(0, 0, 255, 0.788);
+  color: white;
+  outline: none;
+  border: none;
+  border-radius: 15px;
+}
+
+.count-mis-word-con {
+  display: flex;
+  justify-content: space-around;
+  border: 2px solid black;
+  flex: 1;
+  align-items: center;
+  margin-top: 5px;
+  border-left: none;
+  border-right: none;
+}
+.count-mis-word-con span {
+  background-color: rgb(167, 163, 163);
+  font-size: 1.3rem;
+  padding: 5px;
+}
+
+.count-mis-word-con p {
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+button {
+  cursor: pointer;
+}
+
+.misspelled-word {
+  text-decoration: underline;
+  color: red;
+  cursor: pointer;
+  display: inline;
+  margin-left: 5px;
+  padding: 5px;
+}
+
+.correct-word {
+  color: black;
+}
+.suggestions-box {
+  position: fixed;  
+  top: 0;           
+  left: 0;         
+  right: 0;         
+  background-color: #fff;
+  padding: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); 
+  z-index: 1000;    
+}
+
+.suggestions-box h4 {
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+  font-weight: bold;
+  color: black;
+}
+
+.suggestions-box ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.suggestions-box li {
+  cursor: pointer;
+  padding: 5px;
+  font-size: 14px;
+  color: black;
+}
+
+.suggestions-box li:hover {
+  background-color: #f0f0f0; 
+}
+.p-1 {
+  flex: 1;
+  margin-top: 10px;
+  border: 1px solid black;
+  padding: 5px;
+  box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.2);
+}
+
+.bino-img {
+  width: 150px;
+}
+
+.if-no-analyze {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgb(178, 167, 167);
+  height: 100%;
+  justify-content: space-evenly;
 }
