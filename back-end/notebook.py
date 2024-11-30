@@ -78,4 +78,8 @@ def predict():
 
 
 if __name__ == "__main__":
+<<<<<<< HEAD
     app.run(port=5002, debug=True)
+=======
+    app.run(port=5002, debug=True)
+>>>>>>> 045ced0fe588edd84c6c803b7e6565e647e756b3

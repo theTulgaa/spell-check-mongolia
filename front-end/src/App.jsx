@@ -27,8 +27,6 @@ export const App = () => {
     word9: 10,
   };
 
-  const [resdata, setFreqStem] = useState("");
-
   // input text
   const [inputText, setInputText] = useState("");
   // word counter
@@ -72,8 +70,6 @@ export const App = () => {
   };
 
   const handleSubmit = async () => {
-    getStemFreq();
-    
     try {
       const response = await axios.post("http://127.0.0.1:5002/", {
         inputText: inputText,
@@ -86,33 +82,6 @@ export const App = () => {
       setLoader2(true)
     }
   };
-
-  // count stems 
-  const getStemFreq = async () => {
-    try {
-      const response = await fetch("http://localhost:8080/frequency", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ inputText }), // Текстийг JSON хэлбэрээр сервер рүү дамжуулна
-      });
-
-      if (!response.ok) {
-        throw new Error("Серверийн хариулт амжилтгүй байв.");
-      }
-
-      const data = await response.json();
-      console.log("Серверээс ирсэн өгөгдөл:", data);
-      setFreqStem(data); // Хариултыг state-д хадгална
-    } catch (error) {
-      console.error("Анализ хийхэд алдаа гарлаа:", error);
-    }
-  };
-  
-  useEffect(() => {
-    console.log("Шинэчлэгдсэн resdata:", resdata);
-  }, [resdata]);
 
   // sends request to server everytime inputText changes
   useEffect(() => {
@@ -250,7 +219,7 @@ export const App = () => {
               <p style={{ marginTop: "40px", marginLeft: "30px" }}>
                 Давхардсан үгийн жагсаалт
               </p>
-              <DuplicatedWords data={resdata} />
+              <DuplicatedWords data={data} />
               <div className="count-mis-word-con">
                 <span>45 / 50</span>
                 <p>Алдааны үнэлгээ</p>

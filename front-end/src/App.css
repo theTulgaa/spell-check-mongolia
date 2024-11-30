@@ -52,7 +52,7 @@ body {
   display: flex;
   flex-direction: column;
   border-left: 3px solid black;
-  padding-top: 20px;
+  /* padding-top: 20px; */
 }
 
 .vertical-divider {
@@ -151,6 +151,7 @@ button {
   padding: 5px;
   box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.2);
 }
+<<<<<<< HEAD
 body {
   margin: 0;
   padding: 0;
@@ -303,6 +304,8 @@ button {
   padding: 5px;
   box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.2);
 }
+=======
+>>>>>>> 045ced0fe588edd84c6c803b7e6565e647e756b3
 
 .bino-img {
   width: 150px;
