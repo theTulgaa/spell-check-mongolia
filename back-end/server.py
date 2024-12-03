@@ -19,6 +19,7 @@ transfer = """
 
 @app.route('/')
 def index():
+
     suggestions = {}
     words = transfer.split()
     for word in words:

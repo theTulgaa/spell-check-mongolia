@@ -49,7 +49,7 @@ def count_stems(stems, words):
     sorted_stem = dict(sorted(stem_freq.items(), key=lambda item: item[1], reverse=True))
 
     return dict(list(sorted_stem.items())[:10])
-
+  
 
 
 # Тест үгс
@@ -58,7 +58,7 @@ def count_stems(stems, words):
 # words = news.split(" ")
 # stems = different_stems(words)
 
-# # Үр дүнг хэвлэх
+# # # Үр дүнг хэвлэх
 # print("Ижил төстэй байдал нь 70%-иас бага үндэс үгс:", stems)
 
 # freq = count_stems(stems, words)

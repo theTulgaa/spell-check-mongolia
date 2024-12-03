@@ -61,15 +61,7 @@ export const App = () => {
   );
 
   // Count words and letter
-  useEffect(() => {
-    if (!inputText) {
-      const words = inputText.trim().split(/\s+/).filter(Boolean);
-      setWordCount(words.length);
-
-      const letters = inputText.replace(/\s+/g, "").length;
-      setLetterCount(letters);
-    }
-  }, [inputText]);
+  
 
   // send request
   const sendRequest = async (text) => {
@@ -98,35 +90,44 @@ export const App = () => {
     }
   };
 
+  useEffect(() => {
+    if (!inputText) {
+      const words = inputText.trim().split(/\s+/).filter(Boolean);
+      setWordCount(words.length);
+
+      const letters = inputText.replace(/\s+/g, "").length;
+      setLetterCount(letters);
+    }
+  }, [inputText]);
+
+
   // sends request to server everytime inputText changes
   useEffect(() => {
     if (inputText.trim() !== "") {
       // if (!inputText) {
-      const cleaned = inputText.replace(/[.\/:,"'-]/g, "");
-      sendRequest(cleaned);
+      // const cleaned = inputText.replace(/[.\/:,"'-]/g, "");
+      sendRequest(inputText);
     }
   }, [inputText]);
 
   // get response
   const getResponse = async () => {
-    if (wordCount > 500) {
-      alert("Ugiin too heterchlee sda mni.");
-    } else {
-      setLoader(true);
-      try {
-        const response = await axios.get("http://localhost:8080/");
-        setMisspelledWords(response.data.suggestions);
-        console.log(response.data.suggestions);
-        setLoader(false);
-      } catch (error) {
-        console.error("Error:", error);
-        alert("Something went wrong!");
-        setLoader(false);
-      } finally {
-        setShowTextArea(true);
-        setLoader(false);
-      }
+    
+    setLoader(true);
+    try {
+      const response = await axios.get("http://localhost:8080/");
+      setMisspelledWords(response.data.suggestions);
+      console.log(response.data.suggestions);
+      setLoader(false);
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Something went wrong!");
+      setLoader(false);
+    } finally {
+      setShowTextArea(true);
+      setLoader(false);
     }
+    
   };
 
   const getSuggestion = async (word) => {
@@ -176,9 +177,9 @@ export const App = () => {
         className="text-area"
         onClick={() => {
           setShowTextArea(false);
-          // console.log(wordSaver);
-          // setInputText(wordSaver);
+          
         }}
+        
       >
         {" "}
         {responseText.split(" ").map((word, index) => {
@@ -223,7 +224,7 @@ export const App = () => {
       <div className="main-con">
         {/* text bichih bolon shalgah tovch ntr bairlah container */}
         <div className="left-con">
-          <h1 className="header-text">Saijirdiin baigazde ats ve</h1>
+          {/* <h1 className="header-text">Saijirdiin baigazde ats ve</h1> */}
 
           {!showTextArea ? (
             <textarea
@@ -235,31 +236,14 @@ export const App = () => {
               value={inputText}
             />
           ) : (
-            // <div
-            //   contentEditable={true}
-            //   suppressContentEditableWarning={true}
-            //   className="text-area"
-            //   onChange={(e) => {
-            //     setInputText(e.target.value);
-            //     console.log(inputText);
-            //   }}
-            // >
-            //   {inputText}
-            // </div>
+           
 
             renderTextWithHighlights()
           )}
           {/* 3 tovch hiigeed heden ug heden temdegt orsong tooloh container */}
 
           <div className="three-btn-con">
-            {/* 3 button heseg yvj bn */}
-            {/* <div style={{ display: "flex", alignItems: "center" }}>
-              <MdContentCopy size={33} />
-              <VerticalDivider />
-              <MdDeleteOutline size={40} />
-              <VerticalDivider />
-              <BsFileText size={30} />
-            </div> */}
+            
 
             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
               <ButtonWithIcon icon={MdContentCopy} onClick={handleCopy} tooltip="Copy Text" />
