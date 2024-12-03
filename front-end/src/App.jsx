@@ -89,8 +89,10 @@ export const App = () => {
   useEffect(() => {
     if (inputText.trim() !== "") {
       // if (!inputText) {
-      const cleaned = inputText.replace(/[.\/:,"'-]/g, "");
-      sendRequest(cleaned);
+      sendRequest(inputText);
+      // const cleaned = inputText.replace(/[.\/:,"'-]/g, "");
+      // sendRequest(cleaned);
+      // console.log(cleaned);
 
       const words = inputText.trim().split(/\s+/).filter(Boolean);
       setWordCount(words.length);
@@ -129,14 +131,12 @@ export const App = () => {
       misspelledWords[word] = response.data.response;
       setActiveWord(word);
       setSuggestions(response.data.response);
-      // setSuggestions(misspelledWords[word] || []);
     } catch (error) {
       console.error("Error:", error);
     }
   };
 
   const handleCopy = () => {
-    // setInputText(wordSaver);
     navigator.clipboard.writeText(inputText).then(
       () => alert("Text copied!"),
       (err) => console.error("Could not copy text:", err)
@@ -156,6 +156,33 @@ export const App = () => {
       (text) => setInputText((prev) => prev + text),
       (err) => console.error("Could not paste text:", err)
     );
+  };
+
+  const checkStr = (word) => {
+    const chars = "/[./:,\"-'";
+
+    for (let i = 0; i < chars.length; i++) {
+      if (word.includes(chars[i])) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  const posStr = (word) => {
+    const chars = "/[./:,\"-'";
+    console.log(chars.includes(word[0]), word[0]);
+    return 0 ? chars.includes(word[0]) : 1;
+  };
+
+  const charStr = (word) => {
+    const chars = "/[./:,-'";
+
+    for (let i = 0; i < chars.length; i++) {
+      if (word.includes(chars[i])) {
+        return chars[i];
+      }
+    }
   };
 
   // rendering misspeled and correct words together
@@ -198,16 +225,26 @@ export const App = () => {
     );
   };
 
-  // const handleWordClick = (word) => {
-  //   setActiveWord(word);
-  //   setSuggestions(misspelledWords[word] || []);
-  // };
-
   const handleSuggestionClick = (suggestion) => {
-    const newText = responseText.replace(activeWord, suggestion);
-    setResponseText(newText);
-    setSuggestions([]);
-    setInputText(newText);
+    const check = checkStr(activeWord);
+    const ch1 = posStr(activeWord);
+    const ch2 = charStr(activeWord);
+
+    if (check) {
+      if (ch1 == 0) {
+        suggestion = ch2 + suggestion;
+        let newText = responseText.replace(activeWord, suggestion);
+        setResponseText(newText);
+        setSuggestions([]);
+        setInputText(newText);
+      } else {
+        suggestion = suggestion + ch2;
+        let newText = responseText.replace(activeWord, suggestion);
+        setResponseText(newText);
+        setSuggestions([]);
+        setInputText(newText);
+      }
+    }
   };
 
   if (loader) {
@@ -303,7 +340,6 @@ export const App = () => {
                   key={index}
                   onClick={() => {
                     handleSuggestionClick(suggestion);
-                    // console.log(wordSaver);
                   }}
                 >
                   {suggestion}
