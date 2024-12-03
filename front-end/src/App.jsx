@@ -30,7 +30,7 @@ export const App = () => {
   // input text
   const [inputText, setInputText] = useState("");
   // word counter
-  const [wordCount, setWordCount] = useState(0);
+  const [wordCount, setWordCount] = useState(1);
   // letter counter
   const [letterCount, setLetterCount] = useState(0);
   const [responseText, setResponseText] = useState("");
@@ -47,8 +47,6 @@ export const App = () => {
   // loader for check anal i mean analyze
   const [loader2, setLoader2] = useState(false);
 
-  const [wordSaver, setWordSaver] = useState("");
-
   const ButtonWithIcon = ({ icon: Icon, onClick, tooltip }) => (
     <button
       className="icon-btn"
@@ -59,17 +57,6 @@ export const App = () => {
       <Icon size={30} />
     </button>
   );
-
-  // Count words and letter
-  useEffect(() => {
-    if (!inputText) {
-      const words = inputText.trim().split(/\s+/).filter(Boolean);
-      setWordCount(words.length);
-
-      const letters = inputText.replace(/\s+/g, "").length;
-      setLetterCount(letters);
-    }
-  }, [inputText]);
 
   // send request
   const sendRequest = async (text) => {
@@ -104,19 +91,24 @@ export const App = () => {
       // if (!inputText) {
       const cleaned = inputText.replace(/[.\/:,"'-]/g, "");
       sendRequest(cleaned);
+
+      const words = inputText.trim().split(/\s+/).filter(Boolean);
+      setWordCount(words.length);
+
+      const letters = inputText.replace(/\s+/g, "").length;
+      setLetterCount(letters);
     }
   }, [inputText]);
 
   // get response
   const getResponse = async () => {
-    if (wordCount > 500) {
-      alert("Ugiin too heterchlee sda mni.");
+    if (wordCount > 300) {
+      alert("Үгийн тоо хэтэрсэн");
     } else {
       setLoader(true);
       try {
         const response = await axios.get("http://localhost:8080/");
         setMisspelledWords(response.data.suggestions);
-        console.log(response.data.suggestions);
         setLoader(false);
       } catch (error) {
         console.error("Error:", error);
@@ -137,14 +129,14 @@ export const App = () => {
       misspelledWords[word] = response.data.response;
       setActiveWord(word);
       setSuggestions(response.data.response);
-      setSuggestions(misspelledWords[word] || []);
+      // setSuggestions(misspelledWords[word] || []);
     } catch (error) {
       console.error("Error:", error);
     }
   };
 
   const handleCopy = () => {
-    setInputText(wordSaver);
+    // setInputText(wordSaver);
     navigator.clipboard.writeText(inputText).then(
       () => alert("Text copied!"),
       (err) => console.error("Could not copy text:", err)
@@ -168,7 +160,6 @@ export const App = () => {
 
   // rendering misspeled and correct words together
   const renderTextWithHighlights = () => {
-    // setInputText(wordSaver);
     if (!responseText) return null;
 
     return (
@@ -176,23 +167,29 @@ export const App = () => {
         className="text-area"
         onClick={() => {
           setShowTextArea(false);
-          // console.log(wordSaver);
-          // setInputText(wordSaver);
         }}
       >
-        {" "}
         {responseText.split(" ").map((word, index) => {
           if (misspelledWords[word]) {
             return (
-              // <span key={index} className="misspelled-word words" onClick={() => handleWordClick(word)}>
-              <span key={index} className="misspelled-word words" onMouseOver={() => getSuggestion(word)}>
-                {word}
+              <span>
+                <span
+                  key={index}
+                  className="misspelled-word words"
+                  onMouseOver={() => {
+                    getSuggestion(word);
+                  }}
+                >
+                  {word}
+                </span>
+                <span> </span>
               </span>
             );
           } else {
             return (
               <span className="correct-word words" key={index}>
-                {word}{" "}
+                {word}
+                <span> </span>
               </span>
             );
           }
@@ -201,16 +198,15 @@ export const App = () => {
     );
   };
 
-  const handleWordClick = (word) => {
-    setActiveWord(word);
-    setSuggestions(misspelledWords[word] || []);
-  };
+  // const handleWordClick = (word) => {
+  //   setActiveWord(word);
+  //   setSuggestions(misspelledWords[word] || []);
+  // };
 
   const handleSuggestionClick = (suggestion) => {
     const newText = responseText.replace(activeWord, suggestion);
     setResponseText(newText);
     setSuggestions([]);
-    // setWordSaver(newText);
     setInputText(newText);
   };
 
@@ -221,9 +217,8 @@ export const App = () => {
   return (
     <>
       <div className="main-con">
-        {/* text bichih bolon shalgah tovch ntr bairlah container */}
         <div className="left-con">
-          <h1 className="header-text">Saijirdiin baigazde ats ve</h1>
+          <h1 className="header-text">Үгийн алдаа шалгагч</h1>
 
           {!showTextArea ? (
             <textarea
@@ -235,32 +230,12 @@ export const App = () => {
               value={inputText}
             />
           ) : (
-            // <div
-            //   contentEditable={true}
-            //   suppressContentEditableWarning={true}
-            //   className="text-area"
-            //   onChange={(e) => {
-            //     setInputText(e.target.value);
-            //     console.log(inputText);
-            //   }}
-            // >
-            //   {inputText}
-            // </div>
-
             renderTextWithHighlights()
           )}
+
           {/* 3 tovch hiigeed heden ug heden temdegt orsong tooloh container */}
 
           <div className="three-btn-con">
-            {/* 3 button heseg yvj bn */}
-            {/* <div style={{ display: "flex", alignItems: "center" }}>
-              <MdContentCopy size={33} />
-              <VerticalDivider />
-              <MdDeleteOutline size={40} />
-              <VerticalDivider />
-              <BsFileText size={30} />
-            </div> */}
-
             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
               <ButtonWithIcon icon={MdContentCopy} onClick={handleCopy} tooltip="Copy Text" />
               <VerticalDivider />
@@ -268,10 +243,11 @@ export const App = () => {
               <VerticalDivider />
               <ButtonWithIcon icon={BsFileText} onClick={handlePaste} tooltip="Paste Text" />
             </div>
+
             {/* heden ug heden useg orson heseg */}
             <div className="count-word-letter-con">
-              <div className="">{wordCount}/50 үг</div>
-              <div className="">{letterCount}/800 тэмдэгт</div>
+              <div className="">{wordCount}/300 үг</div>
+              {/* <div className="">{letterCount}/800 тэмдэгт</div> */}
             </div>
           </div>
           <div
@@ -327,8 +303,7 @@ export const App = () => {
                   key={index}
                   onClick={() => {
                     handleSuggestionClick(suggestion);
-                    setWordSaver("wordSaver changed");
-                    console.log(wordSaver);
+                    // console.log(wordSaver);
                   }}
                 >
                   {suggestion}

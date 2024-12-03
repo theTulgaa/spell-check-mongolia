@@ -11,8 +11,10 @@ app = Flask(__name__)
 cors = CORS(app, origins='*')
 
 dir = os.path.dirname(os.path.realpath(__file__)) + '/languages/mn_Mn'
+dir_en = os.path.dirname(os.path.realpath(__file__)) + '/languages/en_US'
 
 dictionary = Dictionary.from_files(dir)
+en_dict = Dictionary.from_files(dir_en)
 
 transfer = """
 """
@@ -23,8 +25,8 @@ def index():
     words = transfer.split()
     for word in words:
         if not dictionary.lookup(word):  
-            # suggestions[word] = list(dictionary.suggest(word))
-            suggestions[word] = 1
+            if not en_dict.lookup(word):
+                suggestions[word] = 1
     response_data = {'suggestions': suggestions}
     json_data = json.dumps(response_data, ensure_ascii=False)
     return Response(json_data, content_type="application/json; charset=utf-8")
@@ -57,7 +59,10 @@ def suggest():
     suggestions = {}
     data = request.json
     word = data.get("message", "")
-    suggestions = list(dictionary.suggest(word))
+    if word[0].isalpha() and word[0].isascii():
+        suggestions = list(en_dict.suggest(word))
+    else:
+        suggestions = list(dictionary.suggest(word))
 
     return jsonify({"response": suggestions})
 
