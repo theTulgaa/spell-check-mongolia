@@ -16,7 +16,13 @@ This is a public repository where you can pull and contribute (review required).
 - **Temuujin Tserenjav** (UX designer, Frontend developer)
 - **Nyamdorj Dorjderem** (Frontend developer)
 - **Monhtulga Elbegsaikhan** (Fullstack developer)
-
+- **Margad Buynt** (Back-end developer)
+- **Oyunnomin Gombo** (Back-end developer)
+- **Tsolmon Tumen** (Back-end developer)
+- **Tsatsral Nyamdorj** (Back-end developer)
+- **Bayartaa Nyamosor** (Back-end developer)
+- **Bayarmagnai Buyntogtock** (Ogogdol tsugluulagch)
+- **Temuulen Ganchuluun** (Front-end)
 ---
 
 ## Project
